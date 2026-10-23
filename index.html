@@ -326,10 +326,9 @@
   <a class="floating-whatsapp" id="floatingWhatsapp" href="#contact" aria-label="تواصل عبر واتساب">✆</a>
 
   <!-- ربط Firebase و ImgBB لعرض وحفظ المنتجات تلقائياً -->
-  <!-- ربط Firebase و ImgBB لعرض وحفظ المنتجات تلقائياً للجميع -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDgxDfzysrUhM_uXpM6u98bRAuEUGhNmn0",
@@ -345,8 +344,8 @@
     const db = getFirestore(app);
     const IMGBB_API_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // 1️⃣ جلب المنتجات مباشرة من Firebase وعرضها في شبكة المنتجات (#productGrid) لأي هاتف
-    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    // 1️⃣ جلب المنتجات مباشرة من Firebase بدون شروط معقدة لتظهر فوراً على كل الهواتف
+    const q = collection(db, "products");
     onSnapshot(q, (snapshot) => {
       const productGrid = document.getElementById('productGrid');
       if (!productGrid) return;
@@ -370,7 +369,7 @@
       });
     });
 
-    // 2️⃣ معالجة إضافة منتج جديد من الواجهة ورفعها لـ ImgBB و Firebase لترى على كل الهواتف
+    // 2️⃣ معالجة إضافة منتج جديد من الواجهة ورفعها لـ ImgBB و Firebase
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('quickProductForm');
       if (form) {
