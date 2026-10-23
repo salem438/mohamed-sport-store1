@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a24">
+  <meta name="description" content="محمد سبورت — كؤوس وميداليات ودروع رياضية للمسابقات والبطولات. اكتشف مجموعتنا واطلب بسهولة.">
+  <title>محمد سبورت | كؤوس ومستلزمات البطولات</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/store.js"></script>
+</head>
+<body>
+  <div class="announcement-bar">🏆 جهّز بطولتك مع محمد سبورت — كؤوس وميداليات لكل لحظة فوز</div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="محمد سبورت - الرئيسية">
+        <img src="assets/logo.svg" alt="" class="brand-logo">
+        <span><strong>محمد سبورت</strong><small>لأن كل فوز يستحق تكريمًا</small></span>
+      </a>
+      <button class="icon-button mobile-menu-button" id="menuToggle" aria-label="فتح القائمة">☰</button>
+      <nav class="main-nav" id="mainNav">
+        <a href="#home">الرئيسية</a><a href="#products">المنتجات</a><a href="#categories">الأقسام</a><a href="#why-us">لماذا نحن؟</a><a href="#contact">تواصل معنا</a>
+      </nav>
+      <div class="header-actions">
+        <label class="search-box" aria-label="ابحث عن منتج"><span>⌕</span><input id="searchInput" type="search" placeholder="ابحث عن كأس أو ميدالية..."></label>
+        <button class="btn btn-primary btn-small add-product-shortcut" type="button" id="openAddProduct"><span aria-hidden="true">＋</span> إضافة منتج</button>
+        <button class="cart-button" id="openCart" aria-label="فتح سلة التسوق"><span>🛒</span><span class="cart-label">السلة</span><b id="cartCount">0</b></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-pattern"></div>
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="eyebrow-dot"></span> لحظات الفوز تبدأ من هنا</span>
+          <h1>كل بطولة لها<br><span>كأس يستحقها</span></h1>
+          <p>اختار من تشكيلتنا المميزة من الكؤوس والميداليات والدروع الرياضية، وخلّي لحظة التتويج ذكرى ما تتنسيش.</p>
+          <div class="hero-actions"><a href="#products" class="btn btn-primary">تسوّق المنتجات <span>←</span></a><a href="#categories" class="btn btn-ghost">اكتشف الأقسام</a></div>
+          <div class="hero-trust"><div class="trust-avatars"><span>🏆</span><span>🥇</span><span>🎖️</span></div><div><strong>لكل فائز تكريم</strong><small>خيارات تناسب بطولاتك وميزانيتك</small></div></div>
+        </div>
+        <div class="hero-art" aria-label="تشكيلة كؤوس رياضية">
+          <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+          <div class="hero-glow"></div>
+          <div class="hero-cup cup-back">🏆</div><div class="hero-cup cup-front">🏆</div>
+          <div class="hero-medal medal-one">🥇</div><div class="hero-medal medal-two">🥈</div>
+          <div class="floating-tag"><span>✦</span><div><b>لحظة التتويج</b><small>تستاهل الأفضل</small></div></div>
+          <div class="hero-art-caption">MOHAMED SPORT <span>•</span> EST. FOR CHAMPIONS</div>
+        </div>
+      </div>
+      <div class="hero-bottom-line"></div>
+    </section>
+
+    <section class="benefit-strip" aria-label="مميزات المتجر">
+      <div class="container benefit-grid">
+        <div class="benefit"><span class="benefit-icon">🚚</span><div><b>ترتيب وتوصيل الطلب</b><small>التفاصيل تتأكد معاك قبل الشحن</small></div></div>
+        <div class="benefit"><span class="benefit-icon">🏅</span><div><b>تنوع في التصاميم</b><small>كؤوس وميداليات ودروع</small></div></div>
+        <div class="benefit"><span class="benefit-icon">💬</span><div><b>تواصل مباشر</b><small>استفسر عن المقاسات والتخصيص</small></div></div>
+        <div class="benefit"><span class="benefit-icon">🔒</span><div><b>طرق دفع واضحة</b><small>اختار الطريقة المناسبة لطلبك</small></div></div>
+      </div>
+    </section>
+
+    <section class="section categories-section" id="categories">
+      <div class="container">
+        <div class="section-heading"><div><span class="section-kicker">تسوّق حسب القسم</span><h2>كل ما تحتاجه <span>للتتويج</span></h2></div><p>من كأس البطولة للميدالية التذكارية، اختار القطعة المناسبة للمناسبة.</p></div>
+        <div class="category-grid">
+          <button class="category-card category-gold" data-category="كؤوس"><span class="category-art">🏆</span><span class="category-text"><b>الكؤوس الرياضية</b><small>لأبطال كل بطولة</small></span><span class="category-arrow">↙</span></button>
+          <button class="category-card category-silver" data-category="ميداليات"><span class="category-art">🥇</span><span class="category-text"><b>الميداليات</b><small>تفاصيل صغيرة بإنجاز كبير</small></span><span class="category-arrow">↙</span></button>
+          <button class="category-card category-dark" data-category="دروع"><span class="category-art">🏅</span><span class="category-text"><b>الدروع التكريمية</b><small>تقدير يفضل فاكرينه</small></span><span class="category-arrow">↙</span></button>
+          <button class="category-card category-green" data-category="إكسسوارات"><span class="category-art">🎖️</span><span class="category-text"><b>مستلزمات البطولات</b><small>لمسات تكمل يومك</small></span><span class="category-arrow">↙</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section products-section" id="products">
+      <div class="container">
+        <div class="section-heading products-heading"><div><span class="section-kicker">اختيارات تستحق الفوز</span><h2>منتجات <span>مميزة</span></h2></div><a class="text-link" href="#products" id="showAllProducts">عرض كل المنتجات <span>←</span></a></div>
+        <div class="product-toolbar"><div class="filter-pills" id="categoryFilters"><button class="filter-pill active" data-filter="الكل">الكل</button><button class="filter-pill" data-filter="كؤوس">كؤوس</button><button class="filter-pill" data-filter="ميداليات">ميداليات</button><button class="filter-pill" data-filter="دروع">دروع</button><button class="filter-pill" data-filter="إكسسوارات">إكسسوارات</button></div><label class="sort-control">ترتيب حسب <select id="sortSelect"><option value="featured">الأكثر تميزًا</option><option value="price-low">السعر: الأقل أولًا</option><option value="price-high">السعر: الأعلى أولًا</option><option value="name">الاسم</option></select></label></div>
+        <div class="product-grid" id="productGrid" aria-live="polite"><div class="loading-state">بنجهّز المنتجات لك...</div></div>
+        <div class="empty-state" id="emptyProducts" hidden><span>🔎</span><h3>مش لقينا منتجات مطابقة</h3><p>جرّب تغيّر كلمة البحث أو تختار قسم تاني.</p><button class="btn btn-primary" id="clearFilters">عرض كل المنتجات</button></div>
+      </div>
+    </section>
+
+    <section class="custom-banner"><div class="container custom-banner-inner"><div class="custom-icon">✦</div><div><span class="section-kicker">عندك بطولة خاصة؟</span><h2>عايز تجهّز تكريم لفريقك؟</h2><p>تواصل معانا لتحديد الكمية والتصميم المناسب، وهنرتّب تفاصيل الطلب معاك.</p></div><a class="btn btn-light" id="customContact" href="#contact">اطلب استشارة <span>←</span></a></div></section>
+
+    <section class="section why-section" id="why-us"><div class="container"><div class="section-heading"><div><span class="section-kicker">تجربة شراء بسيطة</span><h2>ليه تختار <span>محمد سبورت؟</span></h2></div><p>اهتمام بالتفاصيل من اختيار المنتج لحد تأكيد طلبك.</p></div><div class="why-grid"><article class="why-card"><span>01</span><div class="why-icon">🎯</div><h3>اختيار واضح</h3><p>تفاصيل المنتج والسعر والقسم ظاهرة قدامك عشان تختار بسهولة.</p></article><article class="why-card"><span>02</span><div class="why-icon">📦</div><h3>طلب منظم</h3><p>ضيف المنتجات للسلة وسجّل بيانات التواصل والعنوان لتأكيد الطلب.</p></article><article class="why-card"><span>03</span><div class="why-icon">🤝</div><h3>تواصل بشري</h3><p>تفاصيل الشحن والدفع النهائي تتأكد معاك قبل إتمام الطلب.</p></article></div></div></section>
+
+    <section class="newsletter-section"><div class="container newsletter-inner"><div><span class="section-kicker">خليك قريب من أبطالنا</span><h2>عندك سؤال عن منتج؟</h2><p>ابعتلنا استفسارك مباشرة، وهنساعدك تختار الأنسب.</p></div><a class="btn btn-primary" id="newsletterContact" href="#contact">تواصل معانا <span>←</span></a></div></section>
+  </main>
+
+  <footer class="site-footer" id="contact"><div class="container footer-main"><div class="footer-brand-col"><a class="brand brand-footer" href="#home"><img src="assets/logo.svg" alt="" class="brand-logo"><span><strong>محمد سبورت</strong><small>لأن كل فوز يستحق تكريمًا</small></span></a><p>كؤوس وميداليات ودروع رياضية تساعدك تحتفل بالإنجاز وتكرّم الأبطال.</p><div class="social-links"><a id="footerWhatsapp" href="https://wa.me/201100181646" target="_blank" rel="noopener">واتساب ↗</a><a id="footerFacebook" href="#" target="_blank" rel="noopener">فيسبوك ↗</a></div></div><div class="footer-col"><h3>روابط سريعة</h3><a href="#products">كل المنتجات</a><a href="#categories">الأقسام</a><a href="#why-us">عن المتجر</a><a href="admin.html">إدارة المتجر</a></div><div class="footer-col"><h3>خدمة العملاء</h3><a href="#contact">تواصل معنا</a><a href="#payment-info">طرق الدفع</a><span>تأكيد الطلبات خلال التواصل</span></div><div class="footer-col" id="payment-info"><h3>طرق الدفع</h3><div class="payment-logos"><span>💵 عند الاستلام</span><span>📲 تحويل إلكتروني</span><span>💳 بطاقة بنكية*</span></div><small class="payment-note">* الدفع بالبطاقة يحتاج ربط بوابة دفع معتمدة قبل تفعيله.</small><p class="contact-lines">
+            <span>📞 الهاتف: <a id="footerPhoneLink" href="tel:01100181646"><b id="footerPhone">01100181646</b></a></span>
+            <span>💬 واتساب: <a id="footerWhatsappNumberLink" href="https://wa.me/201100181646" target="_blank" rel="noopener"><b id="footerWhatsappNumber">01100181646</b></a></span>
+            <span>✉️ البريد: <a id="footerEmailLink" href="#contact"><b id="footerEmail">أضف البريد من الإدارة</b></a></span>
+          </p></div></div><div class="footer-bottom"><span>© <span id="currentYear"></span> محمد سبورت. جميع الحقوق محفوظة.</span><span>صُمّم لعشاق البطولات 🏆</span></div></footer>
+
+
+  <div class="modal-backdrop" id="productModal" hidden>
+    <section class="checkout-modal product-add-modal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+      <div class="modal-head">
+        <div><span class="section-kicker">إدارة سريعة من واجهة المتجر</span><h2 id="productModalTitle">إضافة منتج جديد</h2></div>
+        <button class="close-button" id="closeProductModal" type="button" aria-label="إغلاق نموذج إضافة المنتج">×</button>
+      </div>
+      <form id="quickProductForm">
+        <input type="hidden" name="id" value="">
+        <input type="hidden" name="image" value="">
+        <div class="form-grid">
+          <label>اسم المنتج *<input name="name" required maxlength="100" placeholder="مثال: كأس البطولة الذهبي"></label>
+          <label>القسم *<select name="category" required><option value="كؤوس">كؤوس</option><option value="ميداليات">ميداليات</option><option value="دروع">دروع</option><option value="إكسسوارات">إكسسوارات</option></select></label>
+          <label>السعر بالجنيه *<input name="price" type="number" min="0" step="0.01" required placeholder="450"></label>
+          <label>السعر قبل الخصم (اختياري)<input name="oldPrice" type="number" min="0" step="0.01" placeholder="550"></label>
+          <label>شارة المنتج<input name="tag" maxlength="30" placeholder="جديد / الأكثر مبيعًا"></label>
+          <label>رمز المنتج التعبيري<input name="emoji" maxlength="8" value="🏆" placeholder="🏆"></label>
+          <label class="full-field image-upload-field">صورة المنتج من جهازك (اختياري)<input id="quickProductImageFile" name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>اختار صورة JPG أو PNG أو WEBP أو GIF. سيتم ضغط الصورة تلقائيًا لتقليل مساحة التخزين.</small></label>
+          <div class="image-preview-wrap full-field" id="quickImagePreviewWrap" hidden><span>معاينة الصورة</span><img id="quickImagePreview" alt="معاينة صورة المنتج"></div>
+          <label class="full-field">وصف المنتج<textarea name="description" rows="3" maxlength="600" placeholder="الخامة، الارتفاع، اللون، والاستخدام..."></textarea></label>
+          <label class="quick-check"><input name="featured" type="checkbox" checked><span>إظهار ضمن المنتجات المميزة</span></label>
+          <label class="quick-check"><input name="available" type="checkbox" checked><span>المنتج متاح للطلب</span></label>
+        </div>
+        <p class="form-status" id="quickProductStatus" role="status" aria-live="polite"></p>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit" id="quickProductSubmit">حفظ وإضافة المنتج</button>
+          <button class="btn btn-outline" id="cancelQuickProduct" type="button">إلغاء</button>
+        </div>
+        <p class="quick-product-note">سيتم حفظ المنتج في قاعدة البيانات مباشرة ليظهر لجميع العملاء.</p>
+      </form>
+    </section>
+  </div>
+
+  <div class="overlay" id="cartOverlay" hidden></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="سلة التسوق" aria-hidden="true"><div class="drawer-head"><div><span class="section-kicker">خطوة أقرب للفوز</span><h2>سلة التسوق <span id="drawerCount">(0)</span></h2></div><button class="close-button" id="closeCart" aria-label="إغلاق السلة">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-empty" id="cartEmpty"><span>🛒</span><b>سلتك لسه فاضية</b><p>اختار المنتجات اللي تناسب بطولتك.</p><button class="btn btn-primary" id="continueShopping">تسوّق الآن</button></div><div class="cart-summary" id="cartSummary" hidden><div class="summary-line"><span>الإجمالي الفرعي</span><b id="cartSubtotal">0 ج.م</b></div><div class="summary-line"><span>الشحن</span><small>يتأكد قبل تأكيد الطلب</small></div><div class="summary-total"><span>الإجمالي المبدئي</span><strong id="cartTotal">0 ج.م</strong></div><p class="summary-note">لن يتم تحصيل أي مبلغ إلكتروني من خلال هذه النسخة التجريبية.</p><button class="btn btn-primary btn-block" id="goCheckout">استكمال الطلب <span>←</span></button></div></aside>
+
+  <div class="modal-backdrop" id="checkoutModal" hidden><section class="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle"><div class="modal-head"><div><span class="section-kicker">بيانات الشحن والتواصل</span><h2 id="checkoutTitle">تأكيد الطلب</h2></div><button class="close-button" id="closeCheckout" aria-label="إغلاق">×</button></div><form id="checkoutForm"><div class="form-grid"><label>الاسم بالكامل<input name="name" autocomplete="name" required minlength="2" placeholder="اكتب اسمك"></label><label>رقم الموبايل<input name="phone" inputmode="tel" autocomplete="tel" required minlength="8" placeholder="01xxxxxxxxx"></label><label class="full-field">العنوان بالتفصيل<textarea name="address" autocomplete="street-address" required rows="2" placeholder="المحافظة، المنطقة، الشارع، رقم العقار..."></textarea></label><label>المحافظة<input name="governorate" required placeholder="مثال: القاهرة"></label><label>طريقة الدفع<select name="payment" id="paymentMethod" required><option value="cod">الدفع عند الاستلام</option><option value="instapay">تحويل إلكتروني / InstaPay يدويًا</option></select></label><label class="full-field">ملاحظات إضافية (اختياري)<textarea name="notes" rows="2" placeholder="الكمية أو تفاصيل خاصة بالطلب"></textarea></label></div><div class="payment-explainer" id="paymentExplainer">سيتم تأكيد تفاصيل الطلب والشحن معك قبل التجهيز.</div><div class="checkout-total"><span>إجمالي المنتجات</span><strong id="checkoutTotal">0 ج.م</strong></div><label class="consent-check"><input type="checkbox" required><span>أوافق على التواصل معي لتأكيد تفاصيل الطلب.</span></label><button class="btn btn-primary btn-block" type="submit" id="placeOrder">إرسال الطلب <span>←</span></button><p class="secure-note">طلب تجريبي: تُحفَظ بيانات الطلب في هذا المتصفح فقط. لا تدخل بيانات بطاقات بنكية هنا.</p></form></section></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <a class="floating-whatsapp" id="floatingWhatsapp" href="#contact" aria-label="تواصل عبر واتساب">✆</a>
+
+  <!-- ربط Firebase و ImgBB لعرض وحفظ المنتجات تلقائياً -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgxDfzysrUhM_uXpM6u98bRAuEUGhNmn0",
+      authDomain: "mohamed-sport-store1.firebaseapp.com",
+      projectId: "mohamed-sport-store1",
+      storageBucket: "mohamed-sport-store1.firebasestorage.app",
+      messagingSenderId: "488043726196",
+      appId: "1:488043726196:web:3ff24ef18c1ae78c4d5821",
+      measurementId: "G-LHDE7G122N"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const IMGBB_API_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
+
+    // جلب المنتجات وعرضها فورياً في الشبكة وتحديث المتجر
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      const products = [];
+      snapshot.forEach((doc) => {
+        products.push({ id: doc.id, ...doc.data() });
+      });
+
+      // إرسال المنتجات لملف store.js أو تحديث الواجهة مباشرة
+      window.firebaseProducts = products;
+      window.dispatchEvent(new CustomEvent('firebaseProductsLoaded', { detail: products }));
+    });
+
+    // معالجة إضافة منتج جديد من الواجهة وسفره لـ ImgBB و Firebase
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('quickProductForm');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const statusEl = document.getElementById('quickProductStatus');
+          const submitBtn = document.getElementById('quickProductSubmit');
+          
+          statusEl.textContent = "جاري رفع الصورة ونشر المنتج...";
+          submitBtn.disabled = true;
+
+          try {
+            const imageFile = document.getElementById('quickProductImageFile').files[0];
+            let imageUrl = "assets/logo.svg";
+
+            if (imageFile) {
+              const formData = new FormData();
+              formData.append("image", imageFile);
+              const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: "POST",
+                body: formData
+              });
+              const data = await res.json();
+              if (data && data.success) {
+                imageUrl = data.data.url;
+              }
+            }
+
+            const formDataObj = new FormData(form);
+            const productData = {
+              name: formDataObj.get('name'),
+              category: formDataObj.get('category'),
+              price: Number(formDataObj.get('price')),
+              oldPrice: formDataObj.get('oldPrice') ? Number(formDataObj.get('oldPrice')) : null,
+              tag: formDataObj.get('tag') || '',
+              emoji: formDataObj.get('emoji') || '🏆',
+              description: formDataObj.get('description') || '',
+              featured: formDataObj.get('featured') === 'on',
+              available: formDataObj.get('available') === 'on',
+              image: imageUrl,
+              createdAt: new Date()
+            };
+
+            await addDoc(collection(db, "products"), productData);
+
+            statusEl.textContent = "✅ تمت إضافة المنتج ونشره لكل العملاء بنجاح!";
+            form.reset();
+            document.getElementById('quickImagePreviewWrap').hidden = true;
+            setTimeout(() => {
+              document.getElementById('productModal').hidden = true;
+              statusEl.textContent = "";
+            }, 1500);
+          } catch (err) {
+            console.error(err);
+            statusEl.textContent = "❌ حدث خطأ: " + err.message;
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
