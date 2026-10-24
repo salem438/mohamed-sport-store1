@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المنتج - Mohamed Sport Store</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .detail-container { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .detail-image { width: 100%; height: 350px; object-fit: cover; border-radius: 12px; }
+    .detail-info { display: flex; flex-direction: column; justify-content: center; }
+    .detail-title { font-size: 26px; font-weight: 900; margin-bottom: 10px; color: #102a24; }
+    .detail-price { font-size: 22px; color: #28a745; font-weight: bold; margin-bottom: 15px; }
+    .detail-badge { display: inline-block; background: #eef2f3; padding: 4px 12px; border-radius: 20px; font-size: 13px; color: #555; margin-bottom: 15px; width: fit-content; }
+    .detail-desc { font-size: 14px; color: #666; line-height: 1.8; margin-bottom: 25px; }
+    .action-btn { display: inline-block; padding: 12px 25px; background: #25d366; color: white; border-radius: 10px; font-size: 16px; font-weight: bold; text-decoration: none; text-align: center; }
+    .back-btn { display: inline-block; margin-bottom: 20px; color: #102a24; font-weight: bold; text-decoration: none; }
+    @media(max-width: 768px) { .detail-container { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div style="max-width: 900px; margin: 20px auto 0;">
+    <a href="index.html" class="back-btn">→ العودة للمتجر</a>
+  </div>
+
+  <div class="detail-container" id="detailBox">
+    <p>جاري تحميل تفاصيل المنتج...</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgxDfzysrUhM_uXpM6u98bRAuEUGhNmn0",
+      authDomain: "mohamed-sport-store1.firebaseapp.com",
+      projectId: "mohamed-sport-store1",
+      storageBucket: "mohamed-sport-store1.firebasestorage.app",
+      messagingSenderId: "488043726196",
+      appId: "1:488043726196:web:3ff24ef18c1ae78c4d5821"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    async function loadProductDetail() {
+      const detailBox = document.getElementById('detailBox');
+      if(!productId) {
+        detailBox.innerHTML = "<p>لم يتم تحديد المنتج!</p>";
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "products", productId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const item = docSnap.data();
+          detailBox.innerHTML = `
+            <img src="${item.image}" class="detail-image" alt="${item.name || item.title}">
+            <div class="detail-info">
+              <span class="detail-badge">القسم: ${item.category || 'عام'}</span>
+              <h1 class="detail-title">${item.name || item.title}</h1>
+              <div class="detail-price">${item.price} جنيه</div>
+              <p class="detail-desc">${item.description || 'لا يوجد وصف متاح لهذا المنتج.'}</p>
+              <a href="https://wa.me/201100181646?text=${encodeURIComponent('مرحباً، أريد الاستفسار أو طلب المنتج: ' + (item.name || item.title))}" target="_blank" class="action-btn">طلب عبر الواتساب 💬</a>
+            </div>
+          `;
+        } else {
+          detailBox.innerHTML = "<p>المنتج غير موجود!</p>";
+        }
+      } catch (err) {
+        console.error(err);
+        detailBox.innerHTML = "<p>حدث خطأ أثناء تحميل التفاصيل.</p>";
+      }
+    }
+
+    loadProductDetail();
+  </script>
+</body>
+</html>

@@ -29,6 +29,7 @@
       <div class="header-actions">
         <label class="search-box" aria-label="ابحث عن منتج"><span>⌕</span><input id="searchInput" type="search"
             placeholder="ابحث عن كأس أو ميدالية..."></label>
+        <button class="btn btn-outline btn-small" type="button" id="openLoginModal" style="font-weight: bold;">🔐 دخول الإدارة</button>
         <button class="btn btn-primary btn-small add-product-shortcut" type="button" id="openAddProduct"><span
             aria-hidden="true">＋</span> إضافة منتج</button>
         <button class="cart-button" id="openCart" aria-label="فتح سلة التسوق"><span>🛒</span><span
@@ -199,7 +200,7 @@
       </div>
       <div class="footer-col">
         <h3>روابط سريعة</h3><a href="#products">كل المنتجات</a><a href="#categories">الأقسام</a><a href="#why-us">عن
-          المتجر</a><a href="admin.html">إدارة المتجر</a>
+          المتجر</a><a href="#" id="footerLoginLink">إدارة المتجر 🔐</a>
       </div>
       <div class="footer-col">
         <h3>خدمة العملاء</h3><a href="#contact">تواصل معنا</a><a href="#payment-info">طرق الدفع</a><span>تأكيد الطلبات
@@ -223,7 +224,32 @@
         لعشاق البطولات 🏆</span></div>
   </footer>
 
+  <!-- نافذة تسجيل دخول المدير المنبثقة -->
+  <div class="modal-backdrop" id="loginModal" hidden>
+    <section class="checkout-modal" style="max-width: 420px; padding: 25px;" role="dialog" aria-modal="true">
+      <div class="modal-head" style="margin-bottom: 15px;">
+        <div>
+          <span class="section-kicker">خاص بمدير المتجر</span>
+          <h2>تسجيل الدخول</h2>
+        </div>
+        <button class="close-button" id="closeLoginModal" type="button" aria-label="إغلاق">×</button>
+      </div>
+      <form id="popupLoginForm">
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+          <label>البريد الإلكتروني
+            <input type="email" id="loginEmail" required placeholder="admin@example.com">
+          </label>
+          <label>كلمة السر
+            <input type="password" id="loginPassword" required placeholder="••••••••">
+          </label>
+        </div>
+        <p id="popupLoginStatus" style="margin-top: 12px; font-size: 11px; font-weight: bold; text-align: center;"></p>
+        <button class="btn btn-primary btn-block" type="submit" id="popupLoginSubmit" style="margin-top: 15px;">دخول لوحة التحكم 🚀</button>
+      </form>
+    </section>
+  </div>
 
+  <!-- نافذة إضافة منتج جديدة -->
   <div class="modal-backdrop" id="productModal" hidden>
     <section class="checkout-modal product-add-modal" role="dialog" aria-modal="true"
       aria-labelledby="productModalTitle">
@@ -253,7 +279,7 @@
           <label>رمز المنتج التعبيري<input name="emoji" maxlength="8" value="🏆" placeholder="🏆"></label>
           <label class="full-field image-upload-field">صورة المنتج من جهازك (اختياري)<input id="quickProductImageFile"
               name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>اختار صورة JPG أو
-              PNG أو WEBP أو GIF. سيتم ضغط الصورة تلقائيًا لتقليل مساحة التخزين.</small></label>
+              PNG أو WEBP أو GIF. سيتم ضغط الصورة تلقائياً لتقليل مساحة التخزين.</small></label>
           <div class="image-preview-wrap full-field" id="quickImagePreviewWrap" hidden><span>معاينة الصورة</span><img
               id="quickImagePreview" alt="معاينة صورة المنتج"></div>
           <label class="full-field">وصف المنتج<textarea name="description" rows="3" maxlength="600"
@@ -325,10 +351,11 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <a class="floating-whatsapp" id="floatingWhatsapp" href="#contact" aria-label="تواصل عبر واتساب">✆</a>
 
-  <!-- ربط Firebase و ImgBB لعرض وحفظ المنتجات تلقائياً -->
+  <!-- ربط Firebase و ImgBB وحفظ البيانات في التخزين المحلي لتتوافق مع الفلاتر -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDgxDfzysrUhM_uXpM6u98bRAuEUGhNmn0",
@@ -342,9 +369,10 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
     const IMGBB_API_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // 1️⃣ جلب المنتجات مباشرة من Firebase بدون شروط معقدة لتظهر فوراً على كل الهواتف
+    // جلب المنتجات وعرضها وربطها بصفحة التفاصيل وتخزينها محلياً لتعمل الفلاتر بسلاسة
     const q = collection(db, "products");
     onSnapshot(q, (snapshot) => {
       const productGrid = document.getElementById('productGrid');
@@ -352,24 +380,95 @@
 
       if (snapshot.empty) {
         productGrid.innerHTML = '<div class="loading-state">لا توجد منتجات مضافة حتى الآن. اشرع في إضافة أول منتج!</div>';
+        localStorage.setItem('mohamedSport_products_v1', JSON.stringify([]));
         return;
       }
 
+      const productsForStorage = [];
       productGrid.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const product = doc.data();
+      
+      snapshot.forEach((docSnap) => {
+        const product = docSnap.data();
+        const id = docSnap.id;
+
+        productsForStorage.push({
+          id: id,
+          name: product.name || product.title,
+          category: product.category || 'كؤوس',
+          price: Number(product.price) || 0,
+          oldPrice: Number(product.oldPrice) || 0,
+          tag: product.tag || '',
+          emoji: product.emoji || '🏆',
+          image: product.image || '',
+          description: product.description || '',
+          featured: product.featured !== false,
+          available: product.available !== false
+        });
+
         productGrid.innerHTML += `
-          <div class="product-card" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: white; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 20px;">
-            <img src="${product.image}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 5px;">
-            <h3 style="margin: 10px 0 5px; font-size: 18px; color: #333;">${product.name || product.title}</h3>
-            <p style="color: #28a745; font-weight: bold; font-size: 16px;">${product.price} جنيه</p>
-            <span style="font-size: 13px; background: #eef2f3; padding: 3px 8px; border-radius: 4px; color: #555;">${product.category || 'عام'}</span>
+          <div class="product-card" style="border: 1px solid #e8ece5; padding: 15px; border-radius: 12px; background: white; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; cursor: pointer;" onclick="window.location.href='product-detail.html?id=${id}'">
+            <img src="${product.image}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+            <h3 style="margin: 12px 0 5px; font-size: 17px; color: #102a24;">${product.name || product.title}</h3>
+            <p style="color: #28a745; font-weight: bold; font-size: 16px; margin: 5px 0;">${product.price} جنيه</p>
+            <span style="font-size: 12px; background: #eef2f3; padding: 3px 10px; border-radius: 12px; color: #555;">${product.category || 'عام'}</span>
           </div>
         `;
       });
+
+      // حفظ المنتجات في LocalStorage لتتوافق مع نظام الفلاتر الخاص بالمتجر
+      localStorage.setItem('mohamedSport_products_v1', JSON.stringify(productsForStorage));
     });
 
-    // 2️⃣ معالجة إضافة منتج جديد من الواجهة ورفعها لـ ImgBB و Firebase
+    // إدارة نافذة تسجيل دخول المدير المنبثقة
+    const loginModal = document.getElementById('loginModal');
+    const openLoginBtn = document.getElementById('openLoginModal');
+    const closeLoginBtn = document.getElementById('closeLoginModal');
+    const footerLoginLink = document.getElementById('footerLoginLink');
+
+    const openLogin = (e) => {
+      if(e) e.preventDefault();
+      loginModal.hidden = false;
+      document.body.classList.add('modal-open');
+    };
+
+    const closeLogin = () => {
+      loginModal.hidden = true;
+      document.body.classList.remove('modal-open');
+      document.getElementById('popupLoginStatus').textContent = "";
+    };
+
+    if (openLoginBtn) openLoginBtn.addEventListener('click', openLogin);
+    if (footerLoginLink) footerLoginLink.addEventListener('click', openLogin);
+    if (closeLoginBtn) closeLoginBtn.addEventListener('click', closeLogin);
+
+    document.getElementById('popupLoginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const statusEl = document.getElementById('popupLoginStatus');
+      const submitBtn = document.getElementById('popupLoginSubmit');
+
+      statusEl.textContent = "جاري التحقق من الحساب...";
+      statusEl.style.color = "blue";
+      submitBtn.disabled = true;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        statusEl.textContent = "✅ تم تسجيل الدخول! جاري التوجيه للوحة التحكم...";
+        statusEl.style.color = "green";
+        setTimeout(() => {
+          window.location.href = "admin.html";
+        }, 800);
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "❌ البريد أو كلمة السر غير صحيحة!";
+        statusEl.style.color = "red";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // معالجة إضافة منتج جديد من الواجهة
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('quickProductForm');
       if (form) {
