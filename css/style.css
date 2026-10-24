@@ -31,3 +31,11 @@
 .image-preview-wrap>span{font-size:10px;font-weight:800;color:var(--muted);flex:0 0 auto}
 .image-preview-wrap img{display:block;width:100px;height:94px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid #e8ece5}
 .image-preview-wrap[hidden]{display:none!important}
+.product-management-actions,
+.add-product-shortcut {
+  display: none !important;
+}
+body.is-admin .product-management-actions,
+body.is-admin .add-product-shortcut {
+  display: flex !important;
+}

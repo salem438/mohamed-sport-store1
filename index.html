@@ -11,6 +11,17 @@
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
   <script defer src="js/store.js"></script>
+  <style>
+    /* حماية إضافية لتأكيد إخفاء أدوات الإدارة عن العملاء وإظهارها للمدير فقط */
+    .product-management-actions,
+    .add-product-shortcut {
+      display: none !important;
+    }
+    body.is-admin .product-management-actions,
+    body.is-admin .add-product-shortcut {
+      display: flex !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -279,7 +290,7 @@
           <label>رمز المنتج التعبيري<input name="emoji" maxlength="8" value="🏆" placeholder="🏆"></label>
           <label class="full-field image-upload-field">صورة المنتج من جهازك (اختياري)<input id="quickProductImageFile"
               name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>اختار صورة JPG أو
-              PNG أو WEBP أو GIF. سيتم ضغط الصورة تلقائياً لتقليل مساحة التخزين.</small></label>
+              PNG أو WEBP أو GIF. سيتم ضغط الصورة تلقائيًا لتقليل مساحة التخزين.</small></label>
           <div class="image-preview-wrap full-field" id="quickImagePreviewWrap" hidden><span>معاينة الصورة</span><img
               id="quickImagePreview" alt="معاينة صورة المنتج"></div>
           <label class="full-field">وصف المنتج<textarea name="description" rows="3" maxlength="600"
@@ -351,11 +362,11 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <a class="floating-whatsapp" id="floatingWhatsapp" href="#contact" aria-label="تواصل عبر واتساب">✆</a>
 
-  <!-- ربط Firebase و ImgBB وحفظ البيانات في التخزين المحلي لتتوافق مع الفلاتر -->
+  <!-- ربط Firebase و ImgBB وإدارة الصلاحيات وعرض المنتجات -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDgxDfzysrUhM_uXpM6u98bRAuEUGhNmn0",
@@ -372,7 +383,20 @@
     const auth = getAuth(app);
     const IMGBB_API_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // جلب المنتجات وعرضها وربطها بصفحة التفاصيل وتخزينها محلياً لتعمل الفلاتر بسلاسة
+    // 🔒 1️⃣ فحص الصلاحيات الدقيق: إظهار أدوات الإدارة للمدير فقط وإخفائها عن العملاء
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.body.classList.add('is-admin');
+        const loginBtn = document.getElementById('openLoginModal');
+        if (loginBtn) loginBtn.textContent = '⚙️ لوحة التحكم';
+      } else {
+        document.body.classList.remove('is-admin');
+        const loginBtn = document.getElementById('openLoginModal');
+        if (loginBtn) loginBtn.textContent = '🔐 دخول الإدارة';
+      }
+    });
+
+    // 2️⃣ جلب المنتجات وعرضها وربطها بصفحة التفاصيل وتخزينها محلياً لتعمل الفلاتر بسلاسة
     const q = collection(db, "products");
     onSnapshot(q, (snapshot) => {
       const productGrid = document.getElementById('productGrid');
@@ -415,11 +439,10 @@
         `;
       });
 
-      // حفظ المنتجات في LocalStorage لتتوافق مع نظام الفلاتر الخاص بالمتجر
       localStorage.setItem('mohamedSport_products_v1', JSON.stringify(productsForStorage));
     });
 
-    // إدارة نافذة تسجيل دخول المدير المنبثقة
+    // 3️⃣ إدارة نافذة تسجيل دخول المدير المنبثقة
     const loginModal = document.getElementById('loginModal');
     const openLoginBtn = document.getElementById('openLoginModal');
     const closeLoginBtn = document.getElementById('closeLoginModal');
@@ -427,6 +450,10 @@
 
     const openLogin = (e) => {
       if(e) e.preventDefault();
+      if (auth.currentUser) {
+        window.location.href = "admin.html";
+        return;
+      }
       loginModal.hidden = false;
       document.body.classList.add('modal-open');
     };
@@ -468,12 +495,18 @@
       }
     });
 
-    // معالجة إضافة منتج جديد من الواجهة
+    // 4️⃣ معالجة إضافة منتج جديد (محمي بصلاحيات المدير)
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('quickProductForm');
       if (form) {
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
+          
+          if (!auth.currentUser) {
+            alert("عفواً، غير مسموح لك بإضافة منتجات!");
+            return;
+          }
+
           const statusEl = document.getElementById('quickProductStatus');
           const submitBtn = document.getElementById('quickProductSubmit');
 
