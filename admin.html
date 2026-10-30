@@ -378,7 +378,7 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // 🔒 حماية صارمة للوحة التحكم
+    // 🔒 حماية صارمة لوحة التحكم
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "index.html";
@@ -394,13 +394,13 @@
       }
     });
 
-    // التنقل بين التبويبات
+    // 🔀 تفعيل نظام التبويبات (الأزرار) بدقة
     function switchTab(tabName, btnElement) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
       document.getElementById('tab-' + tabName).classList.remove('hidden');
-      btnElement.classList.add('active');
+      if (btnElement) btnElement.classList.add('active');
 
       if (tabName === 'inventory') loadInventory();
       if (tabName === 'reports') loadReports();
@@ -486,7 +486,6 @@
       }
     });
 
-    // دالة بدء التعديل
     window.startEdit = (id, name, price, category, desc, stock) => {
       document.getElementById('formTitle').innerText = "تعديل المنتج";
       document.getElementById('editProductId').value = id;
@@ -500,7 +499,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // دالة حذف المنتج
     window.deleteProduct = async (id) => {
       if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
         await deleteDoc(doc(db, "products", id));
@@ -518,7 +516,7 @@
       document.getElementById('cancelEditBtn').style.display = "none";
     }
 
-    // 3️⃣ إدارة المخازن
+    // 3️⃣ إدارة المخازن وتحديث الكميات
     function loadInventory() {
       const invBody = document.getElementById('inventoryTableBody');
       onSnapshot(collection(db, "products"), (snapshot) => {
