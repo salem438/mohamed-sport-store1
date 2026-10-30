@@ -228,7 +228,8 @@
 
 <body>
 
-  <div class="admin-container" id="adminContent" style="display: none;">
+  <!-- لوحة التحكم الرئيسية -->
+  <div class="admin-container" id="adminContent">
     <div class="header-bar">
       <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
       <button class="logout-btn" id="logoutBtn">تسجيل الخروج 🚪</button>
@@ -359,15 +360,9 @@
 
   </div>
 
-  <div id="loadingAuth" style="text-align: center; margin-top: 100px; font-family: 'Cairo', sans-serif;">
-    <h2>🔒 جاري التحقق من صلاحيات المدير...</h2>
-    <p style="margin-top: 15px; color: #666;">إذا استغرقت العملية وقتاً طويلاً، يمكنك الضغط هنا:</p>
-    <button onclick="forceOpenAdmin()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px;">فتح لوحة التحكم فوراً 🚀</button>
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -384,28 +379,7 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    window.forceOpenAdmin = function() {
-      document.getElementById('loadingAuth').style.display = 'none';
-      document.getElementById('adminContent').style.display = 'block';
-    }
-
-    // 🔒 فحص الصلاحيات بذكاء لتجنب التعليق
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById('loadingAuth').style.display = 'none';
-        document.getElementById('adminContent').style.display = 'block';
-      } else {
-        // فحص إضافي للتأكد لو الجلسة موجودة محلياً
-        setTimeout(() => {
-          if (!auth.currentUser) {
-            window.location.replace("index.html");
-          } else {
-            window.forceOpenAdmin();
-          }
-        }, 1500);
-      }
-    });
-
+    // فتح اللوحة والتحكم في تسجيل الخروج
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       try {
         await signOut(auth);
@@ -427,9 +401,9 @@
       if (tabName === 'reports') loadReports();
     }
 
-    document.getElementById('btn-tab-products').addEventListener('click', function() { switchTab('products', this); });
-    document.getElementById('btn-tab-inventory').addEventListener('click', function() { switchTab('inventory', this); });
-    document.getElementById('btn-tab-reports').addEventListener('click', function() { switchTab('reports', this); });
+    document.getElementById('btn-tab-products').addEventListener('click', function () { switchTab('products', this); });
+    document.getElementById('btn-tab-inventory').addEventListener('click', function () { switchTab('inventory', this); });
+    document.getElementById('btn-tab-reports').addEventListener('click', function () { switchTab('reports', this); });
 
     // 1️⃣ جلب المنتجات وإدارتها (عرض، تعديل، حذف)
     const pList = document.getElementById('adminProductList');
@@ -671,12 +645,13 @@
             </div>
           </div>
           <script>window.onload = function() { window.print(); }</script>
-        </body>
-        </html>
-      `);
-      pWin.document.close();
-    };
-  </script>
+</body>
+
+</html>
+`);
+pWin.document.close();
+};
+</script>
 </body>
 
 </html>
