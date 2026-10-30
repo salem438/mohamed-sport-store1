@@ -224,13 +224,10 @@
       text-align: center;
     }
 
-    /* شاشة تسجيل الدخول */
-    #authModalScreen {
+    /* 🔒 نافذة إدخال كلمة السر السرية */
+    #pinModalScreen {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: #102a24;
       display: flex;
       justify-content: center;
@@ -238,48 +235,43 @@
       z-index: 9999;
     }
 
-    .auth-box {
+    .pin-box {
       background: white;
       padding: 30px;
       border-radius: 12px;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      text-align: right;
+      max-width: 380px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- شاشة تسجيل الدخول المباشرة والمضمونة -->
-  <div id="authModalScreen">
-    <div class="auth-box">
-      <span style="color: #d97706; font-weight: bold; font-size: 13px;">خاص بمدير المتجر</span>
-      <h2 style="margin-top: 5px; color: #102a24;">تسجيل الدخول للوحة التحكم</h2>
-      <form id="directLoginForm" style="margin-top: 20px;">
+  <!-- 🔒 نافذة الحماية بكلمة السر (PIN Code) -->
+  <div id="pinModalScreen">
+    <div class="pin-box">
+      <span style="color: #d97706; font-weight: bold; font-size: 14px;">🏆 متجر محمد سبورت</span>
+      <h2 style="margin: 10px 0; color: #102a24; font-size: 18px;">أدخل رمز السر الخاص بالمدير</h2>
+      <form id="pinForm" style="margin-top: 15px;">
         <div class="form-group">
-          <label>البريد الإلكتروني</label>
-          <input type="email" id="adminEmail" required placeholder="admin@example.com">
+          <input type="password" id="pinInput" placeholder="أدخل الرمز السرّي..." required style="text-align: center; font-size: 18px; letter-spacing: 3px;">
         </div>
-        <div class="form-group">
-          <label>كلمة السر</label>
-          <input type="password" id="adminPassword" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn-submit" id="loginSubmitBtn">دخول لوحة التحكم 🚀</button>
+        <p id="pinError" style="color: red; font-size: 13px; display: none; margin-bottom: 10px;">❌ الرمز السرّي غير صحيح!</p>
+        <button type="submit" class="btn-submit">فتح لوحة التحكم 🚀</button>
       </form>
-      <div style="text-align: center; margin-top: 15px;">
-        <a href="index.html" style="color: #555; font-size: 13px; text-decoration: underline;">العودة لصفحة المتجر
-          الرئيسية</a>
+      <div style="margin-top: 15px;">
+        <a href="index.html" style="color: #666; font-size: 13px; text-decoration: underline;">العودة للمتجر الرئيسي</a>
       </div>
     </div>
   </div>
 
-  <!-- لوحة التحكم الفعلية -->
+  <!-- 🏆 لوحة التحكم الفعلية (مخفية لحين إدخال رمز السر) -->
   <div class="admin-container" id="adminContent" style="display: none;">
     <div class="header-bar">
       <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
-      <button class="logout-btn" id="logoutBtn" type="button">تسجيل الخروج 🚪</button>
+      <button class="logout-btn" id="logoutBtn" type="button">قفل اللوحة 🔒</button>
     </div>
 
     <!-- أزرار التنقل بين الأقسام -->
@@ -407,7 +399,6 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -420,25 +411,34 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // فتح لوحة التحكم فوراً وبدون تعقيد عند الضغط على دخول
-    document.getElementById('directLoginForm').addEventListener('submit', (e) => {
+    // 🔑 كلمة السر الخاصة بك لفتح اللوحة (يمكنك تغييرها من هنا)
+    const ADMIN_PIN = "1234";
+
+    // معالجة إدخال الرمز السرّي
+    document.getElementById('pinForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      document.getElementById('authModalScreen').style.display = 'none';
-      document.getElementById('adminContent').style.display = 'block';
-      loadProducts();
-      loadInventory();
-      loadReports();
+      const enteredPin = document.getElementById('pinInput').value.trim();
+      const errorElem = document.getElementById('pinError');
+
+      if (enteredPin === ADMIN_PIN) {
+        document.getElementById('pinModalScreen').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        loadProducts();
+        loadInventory();
+        loadReports();
+      } else {
+        errorElem.style.display = 'block';
+      }
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
       location.reload();
     });
 
-    // 🔀 نظام التبويبات الفعّال
+    // 🔀 تفعيل نظام التبويبات والمخازن والتقارير
     const btnProducts = document.getElementById('btn-products');
     const btnInventory = document.getElementById('btn-inventory');
     const btnReports = document.getElementById('btn-reports');
@@ -477,7 +477,7 @@
       secInventory.classList.add('hidden-tab');
     });
 
-    // 1️⃣ جلب المنتجات
+    // 1️⃣ جلب المنتجات وإدارتها
     function loadProducts() {
       const pList = document.getElementById('adminProductList');
       onSnapshot(collection(db, "products"), (snapshot) => {
@@ -619,7 +619,7 @@
       }
     };
 
-    // 3️⃣ تقارير المبيعات
+    // 3️⃣ تقارير المبيعات اليومية
     function loadReports() {
       const ordersBody = document.getElementById('ordersTableBody');
       const todayTotalElem = document.getElementById('todayTotalSales');
@@ -718,13 +718,12 @@
             </div>
           </div>
           <script>window.onload = function() { window.print(); }</script>
-</body>
-
-</html>
-`);
-pWin.document.close();
-};
-</script>
+        </body>
+        </html>
+      `);
+      pWin.document.close();
+    };
+  </script>
 </body>
 
 </html>
