@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>لوحة التحكم - Mohamed Sport Store</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -247,7 +250,7 @@
 
 <body>
 
-  <!-- شاشة تسجيل الدخول -->
+  <!-- شاشة تسجيل الدخول الإجبارية -->
   <div id="authModalScreen">
     <div class="auth-box">
       <span style="color: #d97706; font-weight: bold; font-size: 13px;">خاص بمدير المتجر</span>
@@ -270,7 +273,7 @@
     </div>
   </div>
 
-  <!-- لوحة التحكم الفعلية (مخفية لحين الدخول) -->
+  <!-- لوحة التحكم الفعلية -->
   <div class="admin-container" id="adminContent" style="display: none;">
     <div class="header-bar">
       <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
@@ -419,21 +422,20 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // دالة إظهار لوحة التحكم بعد نجاح الدخول
     function grantAccess() {
       document.getElementById('authModalScreen').style.display = 'none';
       document.getElementById('adminContent').style.display = 'block';
       loadProducts();
+      loadInventory();
+      loadReports();
     }
 
-    // التحقق التلقائي للجلسة المحفوظة مسبقاً
     onAuthStateChanged(auth, (user) => {
       if (user) {
         grantAccess();
       }
     });
 
-    // معالجة تسجيل الدخول بشكل مباشر وفوري عند الضغط على زر الدخول
     document.getElementById('directLoginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('adminEmail').value.trim();
@@ -447,7 +449,6 @@
 
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-        // فتح لوحة التحكم فوراً بدون انتظار
         grantAccess();
       } catch (err) {
         console.error(err);
@@ -466,7 +467,7 @@
       }
     });
 
-    // 🔀 تفعيل التبويبات بسلاسة
+    // 🔀 نظام التبويبات المحسن
     const btnProducts = document.getElementById('btn-products');
     const btnInventory = document.getElementById('btn-inventory');
     const btnReports = document.getElementById('btn-reports');
@@ -493,7 +494,6 @@
       secInventory.classList.remove('hidden-tab');
       secProducts.classList.add('hidden-tab');
       secReports.classList.add('hidden-tab');
-      loadInventory();
     });
 
     btnReports.addEventListener('click', () => {
@@ -504,10 +504,9 @@
       secReports.classList.remove('hidden-tab');
       secProducts.classList.add('hidden-tab');
       secInventory.classList.add('hidden-tab');
-      loadReports();
     });
 
-    // 1️⃣ جلب المنتجات وإدارتها
+    // 1️⃣ جلب المنتجات
     function loadProducts() {
       const pList = document.getElementById('adminProductList');
       onSnapshot(collection(db, "products"), (snapshot) => {
@@ -537,7 +536,6 @@
       });
     }
 
-    // إضافة وتعديل منتج
     const form = document.getElementById('productAdminForm');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -650,7 +648,7 @@
       }
     };
 
-    // 3️⃣ تقارير المبيعات اليومية
+    // 3️⃣ تقارير المبيعات
     function loadReports() {
       const ordersBody = document.getElementById('ordersTableBody');
       const todayTotalElem = document.getElementById('todayTotalSales');
