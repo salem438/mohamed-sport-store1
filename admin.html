@@ -213,7 +213,7 @@
       color: #102a24;
     }
 
-    .hidden {
+    .hidden-tab {
       display: none !important;
     }
 
@@ -223,7 +223,7 @@
       text-align: center;
     }
 
-    /* نافذة تسجيل الدخول في حال لم يكن مسجلاً */
+    /* نافذة تسجيل الدخول الإجبارية */
     #authModalScreen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -247,7 +247,7 @@
 
 <body>
 
-  <!-- شاشة تسجيل الدخول الإجبارية لو لم يكن المدير مسجل دخول -->
+  <!-- شاشة تسجيل الدخول الإجبارية -->
   <div id="authModalScreen">
     <div class="auth-box">
       <span style="color: #d97706; font-weight: bold; font-size: 13px;">خاص بمدير المتجر</span>
@@ -270,22 +270,22 @@
     </div>
   </div>
 
-  <!-- لوحة التحكم الفعلية (مخفية حتى يتم تسجيل الدخول) -->
+  <!-- لوحة التحكم الفعلية (مخفية لحين إتمام تسجيل الدخول) -->
   <div class="admin-container" id="adminContent" style="display: none;">
     <div class="header-bar">
       <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
-      <button class="logout-btn" id="logoutBtn">تسجيل الخروج 🚪</button>
+      <button class="logout-btn" id="logoutBtn" type="button">تسجيل الخروج 🚪</button>
     </div>
 
     <!-- أزرار التنقل بين الأقسام -->
     <div class="admin-tabs">
-      <button class="tab-btn active" id="btn-tab-products" type="button">إدارة المنتجات</button>
-      <button class="tab-btn" id="btn-tab-inventory" type="button">إدارة المخازن 📦</button>
-      <button class="tab-btn" id="btn-tab-reports" type="button">تقارير المبيعات اليومية 📊</button>
+      <button class="tab-btn active" id="btn-products" type="button">إدارة المنتجات</button>
+      <button class="tab-btn" id="btn-inventory" type="button">إدارة المخازن 📦</button>
+      <button class="tab-btn" id="btn-reports" type="button">تقارير المبيعات اليومية 📊</button>
     </div>
 
-    <!-- 1️⃣ قسم إدارة المنتجات (إضافة، تعديل، حذف) -->
-    <div id="tab-products" class="tab-content">
+    <!-- 1️⃣ قسم إدارة المنتجات -->
+    <div id="section-products" class="admin-section">
       <div class="grid-layout">
         <div class="card">
           <h3 id="formTitle">إضافة منتج جديد</h3>
@@ -338,7 +338,7 @@
     </div>
 
     <!-- 2️⃣ قسم إدارة المخازن -->
-    <div id="tab-inventory" class="tab-content hidden">
+    <div id="section-inventory" class="admin-section hidden-tab">
       <div class="card">
         <h3>متابعة المخزون والكميات المتاحة</h3>
         <div class="table-container">
@@ -363,7 +363,7 @@
     </div>
 
     <!-- 3️⃣ قسم تقارير المبيعات اليومية -->
-    <div id="tab-reports" class="tab-content hidden">
+    <div id="section-reports" class="admin-section hidden-tab">
       <div class="grid-layout" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
         <div class="card" style="border-right: 5px solid #28a745;">
           <p style="color: #666; margin:0;">مبيعات اليوم الإجمالية</p>
@@ -419,18 +419,19 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // التحقق من حالة تسجيل الدخول بصرامة
+    // 🔒 التحقق الأمني الكامل وحماية اللوحة
     onAuthStateChanged(auth, (user) => {
       if (user) {
         document.getElementById('authModalScreen').style.display = 'none';
         document.getElementById('adminContent').style.display = 'block';
+        loadProducts();
       } else {
         document.getElementById('authModalScreen').style.display = 'flex';
         document.getElementById('adminContent').style.display = 'none';
       }
     });
 
-    // معالجة تسجيل الدخول من شاشة الحماية المدمجة
+    // تسجيل الدخول
     document.getElementById('directLoginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('adminEmail').value.trim();
@@ -445,7 +446,7 @@
         await signInWithEmailAndPassword(auth, email, pass);
         errorMsg.textContent = "";
       } catch (err) {
-        errorMsg.textContent = "❌ البريد الإلكتروني أو كلمة السر غير صحيحة!";
+        errorMsg.textContent = "❌ البريد أو كلمة السر غير صحيحة!";
       } finally {
         submitBtn.disabled = false;
       }
@@ -460,52 +461,78 @@
       }
     });
 
-    // 🔀 نظام التبويبات الفعّال والسليم 100%
-    window.switchTab = function(tabName, btnElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    // 🔀 تفعيل التبويبات بدقة تامة بدون أخطاء
+    const btnProducts = document.getElementById('btn-products');
+    const btnInventory = document.getElementById('btn-inventory');
+    const btnReports = document.getElementById('btn-reports');
 
-      const targetTab = document.getElementById('tab-' + tabName);
-      if (targetTab) targetTab.classList.remove('hidden');
-      if (btnElement) btnElement.classList.add('active');
+    const secProducts = document.getElementById('section-products');
+    const secInventory = document.getElementById('section-inventory');
+    const secReports = document.getElementById('section-reports');
 
-      if (tabName === 'inventory') loadInventory();
-      if (tabName === 'reports') loadReports();
-    }
+    btnProducts.addEventListener('click', () => {
+      btnProducts.classList.add('active');
+      btnInventory.classList.remove('active');
+      btnReports.classList.remove('active');
 
-    document.getElementById('btn-tab-products').addEventListener('click', function() { window.switchTab('products', this); });
-    document.getElementById('btn-tab-inventory').addEventListener('click', function() { window.switchTab('inventory', this); });
-    document.getElementById('btn-tab-reports').addEventListener('click', function() { window.switchTab('reports', this); });
-
-    // 1️⃣ جلب المنتجات وإدارتها (عرض، تعديل، حذف)
-    const pList = document.getElementById('adminProductList');
-    onSnapshot(collection(db, "products"), (snapshot) => {
-      document.getElementById('pCount').innerText = snapshot.size;
-      if (snapshot.empty) {
-        pList.innerHTML = "<p>لا توجد منتجات مضافة حتى الآن.</p>";
-        return;
-      }
-      pList.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const item = docSnap.data();
-        const id = docSnap.id;
-        pList.innerHTML += `
-          <div class="product-list-item">
-            <img src="${item.image || 'assets/logo.svg'}">
-            <div class="product-info-text">
-              <b>${item.name || item.title}</b>
-              <small>${item.price} جنيه — المخزون: ${item.stock ?? 10}</small>
-            </div>
-            <div class="action-btns">
-              <button class="btn-edit" type="button" onclick="startEdit('${id}', '${item.name || item.title}', '${item.price}', '${item.category}', \`${item.description || ''}\`, '${item.stock ?? 10}')">تعديل ✏️</button>
-              <button class="btn-delete" type="button" onclick="deleteProduct('${id}')">حذف 🗑️</button>
-            </div>
-          </div>
-        `;
-      });
+      secProducts.classList.remove('hidden-tab');
+      secInventory.classList.add('hidden-tab');
+      secReports.classList.add('hidden-tab');
     });
 
-    // 2️⃣ إضافة وتعديل منتج
+    btnInventory.addEventListener('click', () => {
+      btnInventory.classList.add('active');
+      btnProducts.classList.remove('active');
+      btnReports.classList.remove('active');
+
+      secInventory.classList.remove('hidden-tab');
+      secProducts.classList.add('hidden-tab');
+      secReports.classList.add('hidden-tab');
+      loadInventory();
+    });
+
+    btnReports.addEventListener('click', () => {
+      btnReports.classList.add('active');
+      btnProducts.classList.remove('active');
+      btnInventory.classList.remove('active');
+
+      secReports.classList.remove('hidden-tab');
+      secProducts.classList.add('hidden-tab');
+      secInventory.classList.add('hidden-tab');
+      loadReports();
+    });
+
+    // 1️⃣ جلب المنتجات وإدارتها
+    function loadProducts() {
+      const pList = document.getElementById('adminProductList');
+      onSnapshot(collection(db, "products"), (snapshot) => {
+        document.getElementById('pCount').innerText = snapshot.size;
+        if (snapshot.empty) {
+          pList.innerHTML = "<p>لا توجد منتجات مضافة حتى الآن.</p>";
+          return;
+        }
+        pList.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          const id = docSnap.id;
+          pList.innerHTML += `
+            <div class="product-list-item">
+              <img src="${item.image || 'assets/logo.svg'}">
+              <div class="product-info-text">
+                <b>${item.name || item.title}</b>
+                <small>${item.price} جنيه — المخزون: ${item.stock ?? 10}</small>
+              </div>
+              <div class="action-btns">
+                <button class="btn-edit" type="button" onclick="startEdit('${id}', '${item.name || item.title}', '${item.price}', '${item.category}', \`${item.description || ''}\`, '${item.stock ?? 10}')">تعديل ✏️</button>
+                <button class="btn-delete" type="button" onclick="deleteProduct('${id}')">حذف 🗑️</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    // إضافة وتعديل منتج
     const form = document.getElementById('productAdminForm');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -583,7 +610,7 @@
       document.getElementById('cancelEditBtn').style.display = "none";
     }
 
-    // 3️⃣ إدارة المخازن وتحديث الكميات
+    // 2️⃣ إدارة المخازن
     function loadInventory() {
       const invBody = document.getElementById('inventoryTableBody');
       onSnapshot(collection(db, "products"), (snapshot) => {
@@ -618,7 +645,7 @@
       }
     };
 
-    // 4️⃣ تقارير المبيعات اليومية وطباعة الفواتير
+    // 3️⃣ تقارير المبيعات اليومية
     function loadReports() {
       const ordersBody = document.getElementById('ordersTableBody');
       const todayTotalElem = document.getElementById('todayTotalSales');
