@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>لوحة التحكم - Mohamed Sport Store</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: #f4f6f8;
+      padding: 20px;
+      font-family: 'Cairo', Tahoma, sans-serif;
+    }
+
+    .admin-container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #102a24;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    .header-bar h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .logout-btn {
+      background: #b8423a;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* التبويبات */
+    .admin-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .tab-btn.active {
+      background: #d97706;
+      color: white;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #102a24;
+      font-size: 18px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .btn-submit:hover {
+      background: #218838;
+    }
+
+    .product-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product-list-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .product-info-text {
+      flex: 1;
+      margin-right: 15px;
+    }
+
+    .product-info-text b {
+      display: block;
+      font-size: 14px;
+    }
+
+    .product-info-text small {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-edit {
+      background: #ffc107;
+      color: #333;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    table th,
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    table th {
+      background: #f8fafc;
+      font-weight: bold;
+      color: #102a24;
+    }
+
+    .hidden-tab {
+      display: none !important;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* 🔒 نافذة إدخال كلمة السر السرية */
+    #pinModalScreen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #102a24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .pin-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 🔒 نافذة الحماية بكلمة السر (PIN Code) -->
+  <div id="pinModalScreen">
+    <div class="pin-box">
+      <span style="color: #d97706; font-weight: bold; font-size: 14px;">🏆 متجر محمد سبورت</span>
+      <h2 style="margin: 10px 0; color: #102a24; font-size: 18px;">أدخل رمز السر الخاص بالمدير</h2>
+      <form id="pinForm" style="margin-top: 15px;">
+        <div class="form-group">
+          <input type="password" id="pinInput" placeholder="أدخل الرمز السرّي..." required style="text-align: center; font-size: 18px; letter-spacing: 3px;">
+        </div>
+        <p id="pinError" style="color: red; font-size: 13px; display: none; margin-bottom: 10px;">❌ الرمز السرّي غير صحيح!</p>
+        <button type="submit" class="btn-submit">فتح لوحة التحكم 🚀</button>
+      </form>
+      <div style="margin-top: 15px;">
+        <a href="index.html" style="color: #666; font-size: 13px; text-decoration: underline;">العودة للمتجر الرئيسي</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🏆 لوحة التحكم الفعلية -->
+  <div class="admin-container" id="adminContent" style="display: none;">
+    <div class="header-bar">
+      <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
+      <button class="logout-btn" id="logoutBtn" type="button">قفل اللوحة 🔒</button>
+    </div>
+
+    <!-- أزرار التنقل بين الأقسام -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" id="btn-products" type="button">إدارة المنتجات</button>
+      <button class="tab-btn" id="btn-inventory" type="button">إدارة المخازن 📦</button>
+      <button class="tab-btn" id="btn-reports" type="button">تقارير المبيعات اليومية 📊</button>
+    </div>
+
+    <!-- 1️⃣ قسم إدارة المنتجات -->
+    <div id="section-products" class="admin-section">
+      <div class="grid-layout">
+        <div class="card">
+          <h3 id="formTitle">إضافة منتج جديد</h3>
+          <form id="productAdminForm">
+            <input type="hidden" id="editProductId">
+            <div class="form-group">
+              <label>اسم المنتج *</label>
+              <input type="text" id="pTitle" required placeholder="مثال: كأس البطولة الذهبي">
+            </div>
+            <div class="form-group">
+              <label>القسم *</label>
+              <select id="pCategory">
+                <option value="كؤوس">كؤوس</option>
+                <option value="ميداليات">ميداليات</option>
+                <option value="دروع">دروع</option>
+                <option value="إكسسوارات">إكسسوارات</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>السعر (جنيه) *</label>
+              <input type="number" id="pPrice" required placeholder="500">
+            </div>
+            <div class="form-group">
+              <label>الكمية في المخزن *</label>
+              <input type="number" id="pStock" value="10" min="0" required placeholder="10">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <textarea id="pDesc" rows="3" placeholder="وصف وتفاصيل المنتج..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>صورة المنتج</label>
+              <input type="file" id="pImage" accept="image/*">
+              <small style="color: #666;">(اتركه فارغاً عند التعديل إذا لم ترد تغيير الصورة)</small>
+            </div>
+            <button type="submit" class="btn-submit" id="saveBtn">نشر المنتج</button>
+            <button type="button" class="btn-submit" id="cancelEditBtn"
+              style="background:#6c757d; margin-top:8px; display:none;">إلغاء التعديل</button>
+          </form>
+          <p id="status"></p>
+        </div>
+
+        <div class="card">
+          <h3>المنتجات المتاحة في المتجر (<span id="pCount">0</span>)</h3>
+          <div id="adminProductList">
+            <p>جاري تحميل المنتجات...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2️⃣ قسم إدارة المخازن -->
+    <div id="section-inventory" class="admin-section hidden-tab">
+      <div class="card">
+        <h3>متابعة المخزون والكميات المتاحة</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>اسم المنتج</th>
+                <th>القسم</th>
+                <th>السعر</th>
+                <th>الكمية الحالية</th>
+                <th>إجراء سريع</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center;">جاري تحميل المخزون...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3️⃣ قسم تقارير المبيعات اليومية -->
+    <div id="section-reports" class="admin-section hidden-tab">
+      <div class="grid-layout" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+        <div class="card" style="border-right: 5px solid #28a745;">
+          <p style="color: #666; margin:0;">مبيعات اليوم الإجمالية</p>
+          <h2 id="todayTotalSales" style="color: #28a745; margin: 5px 0 0 0;">0 ج.م</h2>
+        </div>
+        <div class="card" style="border-right: 5px solid #3b82f6;">
+          <p style="color: #666; margin:0;">عدد طلبات اليوم</p>
+          <h2 id="todayOrdersCount" style="color: #3b82f6; margin: 5px 0 0 0;">0 طلبات</h2>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>سجل طلبات وفواتير العملاء</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم/اسم العميل</th>
+                <th>تفاصيل الطلب</th>
+                <th>الإجمالي</th>
+                <th>التاريخ والوقت</th>
+                <th>الفاتورة</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center;">جاري جلب الطلبات...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgxDfzysrUhM_uXpM6u98bRAuEUGhNmn0",
+      authDomain: "mohamed-sport-store1.firebaseapp.com",
+      projectId: "mohamed-sport-store1",
+      storageBucket: "mohamed-sport-store1.firebasestorage.app",
+      messagingSenderId: "488043726196",
+      appId: "1:488043726196:web:3ff24ef18c1ae78c4d5821"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
+
+    // 🔑 الرمز السري الخاص بك لفتح اللوحة (يمكنك تعديله لأي رقم تريده)
+    const ADMIN_PIN = "1234";
+
+    document.getElementById('pinForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredPin = document.getElementById('pinInput').value.trim();
+      const errorElem = document.getElementById('pinError');
+
+      if (enteredPin === ADMIN_PIN) {
+        document.getElementById('pinModalScreen').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        loadProducts();
+        loadInventory();
+        loadReports();
+      } else {
+        errorElem.style.display = 'block';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      location.reload();
+    });
+
+    // 🔀 نظام التبويبات الفعّال
+    const btnProducts = document.getElementById('btn-products');
+    const btnInventory = document.getElementById('btn-inventory');
+    const btnReports = document.getElementById('btn-reports');
+
+    const secProducts = document.getElementById('section-products');
+    const secInventory = document.getElementById('section-inventory');
+    const secReports = document.getElementById('section-reports');
+
+    btnProducts.addEventListener('click', () => {
+      btnProducts.classList.add('active');
+      btnInventory.classList.remove('active');
+      btnReports.classList.remove('active');
+
+      secProducts.classList.remove('hidden-tab');
+      secInventory.classList.add('hidden-tab');
+      secReports.classList.add('hidden-tab');
+    });
+
+    btnInventory.addEventListener('click', () => {
+      btnInventory.classList.add('active');
+      btnProducts.classList.remove('active');
+      btnReports.classList.remove('active');
+
+      secInventory.classList.remove('hidden-tab');
+      secProducts.classList.add('hidden-tab');
+      secReports.classList.add('hidden-tab');
+    });
+
+    btnReports.addEventListener('click', () => {
+      btnReports.classList.add('active');
+      btnProducts.classList.remove('active');
+      btnInventory.classList.remove('active');
+
+      secReports.classList.remove('hidden-tab');
+      secProducts.classList.add('hidden-tab');
+      secInventory.classList.add('hidden-tab');
+    });
+
+    // 1️⃣ جلب المنتجات
+    function loadProducts() {
+      const pList = document.getElementById('adminProductList');
+      onSnapshot(collection(db, "products"), (snapshot) => {
+        document.getElementById('pCount').innerText = snapshot.size;
+        if (snapshot.empty) {
+          pList.innerHTML = "<p>لا توجد منتجات مضافة حتى الآن.</p>";
+          return;
+        }
+        pList.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          const id = docSnap.id;
+          pList.innerHTML += `
+            <div class="product-list-item">
+              <img src="${item.image || 'assets/logo.svg'}">
+              <div class="product-info-text">
+                <b>${item.name || item.title}</b>
+                <small>${item.price} جنيه — المخزون: ${item.stock ?? 10}</small>
+              </div>
+              <div class="action-btns">
+                <button class="btn-edit" type="button" onclick="startEdit('${id}', '${item.name || item.title}', '${item.price}', '${item.category}', \`${item.description || ''}\`, '${item.stock ?? 10}')">تعديل ✏️</button>
+                <button class="btn-delete" type="button" onclick="deleteProduct('${id}')">حذف 🗑️</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    const form = document.getElementById('productAdminForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('status');
+      const editId = document.getElementById('editProductId').value;
+      const name = document.getElementById('pTitle').value;
+      const price = Number(document.getElementById('pPrice').value);
+      const stock = Number(document.getElementById('pStock').value);
+      const category = document.getElementById('pCategory').value;
+      const description = document.getElementById('pDesc').value;
+      const imageFile = document.getElementById('pImage').files[0];
+
+      status.innerText = "جاري تنفيذ الطلب...";
+      status.style.color = "blue";
+
+      try {
+        let imageUrl = "";
+        if (imageFile) {
+          const formData = new FormData();
+          formData.append("image", imageFile);
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: formData });
+          const resData = await res.json();
+          if (resData.success) imageUrl = resData.data.url;
+        }
+
+        if (editId) {
+          const updateData = { name, price, stock, category, description };
+          if (imageUrl) updateData.image = imageUrl;
+          await updateDoc(doc(db, "products", editId), updateData);
+          status.innerText = "✅ تم تعديل المنتج بنجاح!";
+        } else {
+          if (!imageUrl) imageUrl = "assets/logo.svg";
+          await addDoc(collection(db, "products"), {
+            name, price, stock, category, description, image: imageUrl, createdAt: new Date()
+          });
+          status.innerText = "✅ تمت إضافة المنتج بنجاح!";
+        }
+
+        status.style.color = "green";
+        resetAdminForm();
+      } catch (err) {
+        console.error(err);
+        status.innerText = "❌ حدث خطأ: " + err.message;
+        status.style.color = "red";
+      }
+    });
+
+    window.startEdit = (id, name, price, category, desc, stock) => {
+      document.getElementById('formTitle').innerText = "تعديل المنتج";
+      document.getElementById('editProductId').value = id;
+      document.getElementById('pTitle').value = name;
+      document.getElementById('pPrice').value = price;
+      document.getElementById('pStock').value = stock;
+      document.getElementById('pCategory').value = category;
+      document.getElementById('pDesc').value = desc;
+      document.getElementById('saveBtn').innerText = "حفظ التعديلات";
+      document.getElementById('cancelEditBtn').style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteProduct = async (id) => {
+      if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+        await deleteDoc(doc(db, "products", id));
+        alert("تم حذف المنتج بنجاح!");
+      }
+    };
+
+    document.getElementById('cancelEditBtn').addEventListener('click', resetAdminForm);
+
+    function resetAdminForm() {
+      form.reset();
+      document.getElementById('editProductId').value = "";
+      document.getElementById('formTitle').innerText = "إضافة منتج جديد";
+      document.getElementById('saveBtn').innerText = "نشر المنتج";
+      document.getElementById('cancelEditBtn').style.display = "none";
+    }
+
+    // 2️⃣ إدارة المخازن
+    function loadInventory() {
+      const invBody = document.getElementById('inventoryTableBody');
+      onSnapshot(collection(db, "products"), (snapshot) => {
+        if (snapshot.empty) {
+          invBody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>لا توجد منتجات.</td></tr>";
+          return;
+        }
+        invBody.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          const id = docSnap.id;
+          invBody.innerHTML += `
+            <tr>
+              <td><b>${item.name || item.title}</b></td>
+              <td>${item.category || 'عام'}</td>
+              <td>${item.price} ج.م</td>
+              <td><input type="number" id="stock-input-${id}" value="${item.stock ?? 10}" style="width: 70px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px;"></td>
+              <td><button type="button" onclick="updateStock('${id}')" style="background: #d97706; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">تحديث</button></td>
+            </tr>
+          `;
+        });
+      });
+    }
+
+    window.updateStock = async function (id) {
+      const newStock = Number(document.getElementById(`stock-input-${id}`).value);
+      try {
+        await updateDoc(doc(db, "products", id), { stock: newStock });
+        alert("✅ تم تحديث المخزون بنجاح!");
+      } catch (err) {
+        alert("❌ حدث خطأ: " + err.message);
+      }
+    };
+
+    // 3️⃣ تقارير المبيعات
+    function loadReports() {
+      const ordersBody = document.getElementById('ordersTableBody');
+      const todayTotalElem = document.getElementById('todayTotalSales');
+      const todayCountElem = document.getElementById('todayOrdersCount');
+
+      onSnapshot(collection(db, "orders"), (snapshot) => {
+        if (snapshot.empty) {
+          ordersBody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>لا توجد طلبات مسجلة حتى الآن.</td></tr>";
+          todayTotalElem.innerText = "0 ج.م";
+          todayCountElem.innerText = "0 طلبات";
+          return;
+        }
+
+        let totalSales = 0;
+        let todayCount = 0;
+        let rowsHtml = "";
+        const todayStr = new Date().toDateString();
+
+        snapshot.forEach((docSnap) => {
+          const order = docSnap.data();
+          const orderDate = order.createdAt?.toDate ? order.createdAt.toDate() : new Date();
+
+          if (orderDate.toDateString() === todayStr) {
+            totalSales += Number(order.total || 0);
+            todayCount++;
+          }
+
+          rowsHtml += `
+            <tr>
+              <td><b>${order.customerName || order.customer?.name || 'عميل'}</b><br><small>${order.phone || order.customer?.phone || ''}</small></td>
+              <td>${order.itemsSummary || 'كؤوس وميداليات رياضية'}</td>
+              <td style="color: #28a745; font-weight: bold;">${order.total || 0} ج.م</td>
+              <td>${orderDate.toLocaleDateString('ar-EG')} - ${orderDate.toLocaleTimeString('ar-EG')}</td>
+              <td><button type="button" onclick='printInvoice(${JSON.stringify(order)})' style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">🖨️ طباعة</button></td>
+            </tr>
+          `;
+        });
+
+        ordersBody.innerHTML = rowsHtml;
+        todayTotalElem.innerText = totalSales + " ج.م";
+        todayCountElem.innerText = todayCount + " طلبات";
+      });
+    }
+
+    window.printInvoice = function (order) {
+      const pWin = window.open('', '_blank');
+      pWin.document.write(`
+        <html lang="ar" dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <title>فاتورة مبيعات - محمد سبورت</title>
+          <style>
+            body { font-family: 'Cairo', Tahoma, sans-serif; padding: 20px; color: #333; }
+            .invoice-box { max-width: 700px; margin: auto; padding: 25px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; }
+            .header { text-align: center; border-bottom: 2px solid #d97706; padding-bottom: 15px; margin-bottom: 20px; }
+            .header h1 { margin: 0; color: #d97706; font-size: 22px; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            table th, table td { padding: 10px; border-bottom: 1px solid #ddd; text-align: right; }
+            table th { background: #f8fafc; }
+            .total { font-size: 18px; font-weight: bold; text-align: left; margin-top: 15px; }
+            .footer { text-align: center; margin-top: 30px; font-size: 13px; color: #666; border-top: 1px dashed #ddd; padding-top: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="invoice-box">
+            <div class="header">
+              <h1>🏆 متجر محمد سبورت</h1>
+              <p>للكؤوس والميداليات والدروع الرياضية</p>
+              <small>هاتف / واتساب: 01100181646</small>
+            </div>
+            <div>
+              <p><strong>اسم العميل:</strong> ${order.customerName || order.customer?.name || 'عميل كريم'}</p>
+              <p><strong>رقم الهاتف:</strong> ${order.phone || order.customer?.phone || 'غير متوفر'}</p>
+              <p><strong>العنوان:</strong> ${order.address || order.customer?.address || 'استلام من المتجر'}</p>
+              <p><strong>التاريخ:</strong> ${new Date().toLocaleString('ar-EG')}</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>المنتج / الصنف</th>
+                  <th>الكمية</th>
+                  <th>الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${order.itemsSummary || 'تشكيلة منتجات رياضية'}</td>
+                  <td>1</td>
+                  <td>${order.total || 0} ج.م</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="total">الإجمالي النهائي: ${order.total || 0} ج.م</div>
+            <div class="footer">
+              <p>شكراً لتعاملكم مع محمد سبورت! نتمنى لكم دوام البطولات 🥇</p>
+            </div>
+          </div>
+          <script>window.onload = function() { window.print(); }</script>
+        </body>
+        </html>
+      `);
+      pWin.document.close();
+    };
+  </script>
+</body>
+
+</html>
