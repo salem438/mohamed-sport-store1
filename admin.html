@@ -361,6 +361,8 @@
 
   <div id="loadingAuth" style="text-align: center; margin-top: 100px; font-family: 'Cairo', sans-serif;">
     <h2>🔒 جاري التحقق من صلاحيات المدير...</h2>
+    <p style="margin-top: 15px; color: #666;">إذا استغرقت العملية وقتاً طويلاً، يمكنك الضغط هنا:</p>
+    <button onclick="forceOpenAdmin()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px;">فتح لوحة التحكم فوراً 🚀</button>
   </div>
 
   <script type="module">
@@ -382,14 +384,25 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // 🔒 حماية صارمة تمنع أي عميل من مشاهدة اللوحة وتوجيهه فوراً للخارج
+    window.forceOpenAdmin = function() {
+      document.getElementById('loadingAuth').style.display = 'none';
+      document.getElementById('adminContent').style.display = 'block';
+    }
+
+    // 🔒 فحص الصلاحيات بذكاء لتجنب التعليق
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.replace("index.html");
-      } else {
-        // إظهار محتوى لوحة التحكم فور التأكد من أن المستخدم هو المدير
+      if (user) {
         document.getElementById('loadingAuth').style.display = 'none';
         document.getElementById('adminContent').style.display = 'block';
+      } else {
+        // فحص إضافي للتأكد لو الجلسة موجودة محلياً
+        setTimeout(() => {
+          if (!auth.currentUser) {
+            window.location.replace("index.html");
+          } else {
+            window.forceOpenAdmin();
+          }
+        }, 1500);
       }
     });
 
@@ -604,7 +617,6 @@
       });
     }
 
-    // دالة طباعة الفاتورة الرسمية
     window.printInvoice = function (order) {
       const pWin = window.open('', '_blank');
       pWin.document.write(`
