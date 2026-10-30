@@ -223,7 +223,7 @@
       text-align: center;
     }
 
-    /* نافذة تسجيل الدخول الإجبارية */
+    /* شاشة تسجيل الدخول */
     #authModalScreen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -247,7 +247,7 @@
 
 <body>
 
-  <!-- شاشة تسجيل الدخول الإجبارية -->
+  <!-- شاشة تسجيل الدخول -->
   <div id="authModalScreen">
     <div class="auth-box">
       <span style="color: #d97706; font-weight: bold; font-size: 13px;">خاص بمدير المتجر</span>
@@ -270,7 +270,7 @@
     </div>
   </div>
 
-  <!-- لوحة التحكم الفعلية (مخفية لحين إتمام تسجيل الدخول) -->
+  <!-- لوحة التحكم الفعلية (مخفية لحين الدخول) -->
   <div class="admin-container" id="adminContent" style="display: none;">
     <div class="header-bar">
       <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
@@ -419,19 +419,21 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // 🔒 التحقق الأمني الكامل وحماية اللوحة
+    // دالة إظهار لوحة التحكم بعد نجاح الدخول
+    function grantAccess() {
+      document.getElementById('authModalScreen').style.display = 'none';
+      document.getElementById('adminContent').style.display = 'block';
+      loadProducts();
+    }
+
+    // التحقق التلقائي للجلسة المحفوظة مسبقاً
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        document.getElementById('authModalScreen').style.display = 'none';
-        document.getElementById('adminContent').style.display = 'block';
-        loadProducts();
-      } else {
-        document.getElementById('authModalScreen').style.display = 'flex';
-        document.getElementById('adminContent').style.display = 'none';
+        grantAccess();
       }
     });
 
-    // تسجيل الدخول
+    // معالجة تسجيل الدخول بشكل مباشر وفوري عند الضغط على زر الدخول
     document.getElementById('directLoginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('adminEmail').value.trim();
@@ -439,15 +441,18 @@
       const errorMsg = document.getElementById('loginErrorMsg');
       const submitBtn = document.getElementById('loginSubmitBtn');
 
-      errorMsg.textContent = "جاري التحقق...";
+      errorMsg.textContent = "جاري التحقق والدخول...";
+      errorMsg.style.color = "blue";
       submitBtn.disabled = true;
 
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-        errorMsg.textContent = "";
+        // فتح لوحة التحكم فوراً بدون انتظار
+        grantAccess();
       } catch (err) {
-        errorMsg.textContent = "❌ البريد أو كلمة السر غير صحيحة!";
-      } finally {
+        console.error(err);
+        errorMsg.textContent = "❌ البريد الإلكتروني أو كلمة السر غير صحيحة!";
+        errorMsg.style.color = "red";
         submitBtn.disabled = false;
       }
     });
@@ -455,13 +460,13 @@
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       try {
         await signOut(auth);
-        window.location.href = "index.html";
+        location.reload();
       } catch (error) {
         console.error("خطأ أثناء تسجيل الخروج:", error);
       }
     });
 
-    // 🔀 تفعيل التبويبات بدقة تامة بدون أخطاء
+    // 🔀 تفعيل التبويبات بسلاسة
     const btnProducts = document.getElementById('btn-products');
     const btnInventory = document.getElementById('btn-inventory');
     const btnReports = document.getElementById('btn-reports');
