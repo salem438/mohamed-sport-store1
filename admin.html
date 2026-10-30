@@ -436,7 +436,7 @@
       }
     });
 
-    // 🔀 دالة التنقل بين الأقسام (المنتجات، المخازن، التقارير)
+    // 🔀 دالة التنقل بين الأقسام (المنتجات، المخازن، التقارير) المضمونة
     window.switchSection = function(sectionId, btnElem) {
       document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active-section'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
