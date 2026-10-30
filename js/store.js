@@ -8,12 +8,12 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const makeId = () => (globalThis.crypto?.randomUUID?.() || `p-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`);
   const defaults = [
-    { id:'cup-gold-01', name:'كأس البطولة الذهبي', category:'كؤوس', price:650, oldPrice:780, emoji:'🏆', tag:'الأكثر طلبًا', image:'', description:'كأس بتصميم ذهبي أنيق مناسب لبطولات المدارس والأندية والفعاليات الرياضية.', featured:true, available:true },
-    { id:'cup-silver-02', name:'كأس النخبة الفضي', category:'كؤوس', price:480, oldPrice:0, emoji:'🏆', tag:'اختيار مميز', image:'', description:'تصميم فضي أنيق لتكريم أصحاب المراكز الأولى والإنجازات الرياضية.', featured:true, available:true },
-    { id:'medal-gold-03', name:'ميدالية بطل ذهبية', category:'ميداليات', price:55, oldPrice:65, emoji:'🥇', tag:'قيمة رائعة', image:'', description:'ميدالية ذهبية للاعبين والمشاركين في المسابقات والبطولات.', featured:true, available:true },
-    { id:'shield-04', name:'درع التميز الرياضي', category:'دروع', price:390, oldPrice:0, emoji:'🏅', tag:'للتكريم', image:'', description:'درع تكريمي أنيق للمدربين والمنظمين وأصحاب الإنجازات المميزة.', featured:true, available:true },
-    { id:'medal-set-05', name:'طقم ميداليات للمراكز الثلاثة', category:'ميداليات', price:145, oldPrice:175, emoji:'🎖️', tag:'طقم متكامل', image:'', description:'طقم ميداليات ذهبي وفضي وبرونزي لتكريم أصحاب المراكز الأول والثاني والثالث.', featured:false, available:true },
-    { id:'accessory-06', name:'قاعدة عرض للكأس', category:'إكسسوارات', price:95, oldPrice:0, emoji:'✨', tag:'إضافة عملية', image:'', description:'قاعدة عرض تساعد على إظهار الكأس بشكل منظم بعد انتهاء البطولة.', featured:false, available:true }
+    { id: 'cup-gold-01', name: 'كأس البطولة الذهبي', category: 'كؤوس', price: 650, oldPrice: 780, emoji: '🏆', tag: 'الأكثر طلبًا', image: '', description: 'كأس بتصميم ذهبي أنيق مناسب لبطولات المدارس والأندية والفعاليات الرياضية.', featured: true, available: true, stock: 15 },
+    { id: 'cup-silver-02', name: 'كأس النخبة الفضي', category: 'كؤوس', price: 480, oldPrice: 0, emoji: '🏆', tag: 'اختيار مميز', image: '', description: 'تصميم فضي أنيق لتكريم أصحاب المراكز الأولى والإنجازات الرياضية.', featured: true, available: true, stock: 10 },
+    { id: 'medal-gold-03', name: 'ميدالية بطل ذهبية', category: 'ميداليات', price: 55, oldPrice: 65, emoji: '🥇', tag: 'قيمة رائعة', image: '', description: 'ميدالية ذهبية للاعبين والمشاركين في المسابقات والبطولات.', featured: true, available: true, stock: 50 },
+    { id: 'shield-04', name: 'درع التميز الرياضي', category: 'دروع', price: 390, oldPrice: 0, emoji: '🏅', tag: 'للتكريم', image: '', description: 'درع تكريمي أنيق للمدربين والمنظمين وأصحاب الإنجازات المميزة.', featured: true, available: true, stock: 8 },
+    { id: 'medal-set-05', name: 'طقم ميداليات للمراكز الثلاثة', category: 'ميداليات', price: 145, oldPrice: 175, emoji: '🎖️', tag: 'طقم متكامل', image: '', description: 'طقم ميداليات ذهبي وفضي وبرونزي لتكريم أصحاب المراكز الأول والثاني والثالث.', featured: false, available: true, stock: 12 },
+    { id: 'accessory-06', name: 'قاعدة عرض للكأس', category: 'إكسسوارات', price: 95, oldPrice: 0, emoji: '✨', tag: 'إضافة عملية', image: '', description: 'قاعدة عرض تساعد على إظهار الكأس بشكل منظم بعد انتهاء البطولة.', featured: false, available: true, stock: 20 }
   ];
   const read = (key, fallback) => { try { const value = localStorage.getItem(key); return value === null ? fallback : JSON.parse(value); } catch { return fallback; } };
   const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
@@ -32,8 +32,8 @@
       facebook: String(stored.facebook || '')
     };
   }
-  function esc(value = '') { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function money(value) { return new Intl.NumberFormat('ar-EG', { style:'currency', currency:'EGP', maximumFractionDigits:2 }).format(Number(value) || 0); }
+  function esc(value = '') { return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function money(value) { return new Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'EGP', maximumFractionDigits: 2 }).format(Number(value) || 0); }
   function validImage(value) {
     const text = String(value || '').trim();
     if (/^data:image\/(?:jpeg|png|webp);base64,[a-z0-9+/=\r\n]+$/i.test(text)) return text;
@@ -117,16 +117,16 @@
     if (activeCategory !== 'الكل') items = items.filter(p => p.category === activeCategory);
     if (searchTerm) items = items.filter(p => `${p.name} ${p.category} ${p.description || ''} ${p.tag || ''}`.toLocaleLowerCase('ar').includes(searchTerm.toLocaleLowerCase('ar')));
     const sort = $('#sortSelect')?.value || 'featured';
-    if (sort === 'price-low') items.sort((a,b) => Number(a.price)-Number(b.price));
-    else if (sort === 'price-high') items.sort((a,b) => Number(b.price)-Number(a.price));
-    else if (sort === 'name') items.sort((a,b) => String(a.name).localeCompare(String(b.name), 'ar'));
-    else items.sort((a,b) => Number(Boolean(b.featured))-Number(Boolean(a.featured)));
+    if (sort === 'price-low') items.sort((a, b) => Number(a.price) - Number(b.price));
+    else if (sort === 'price-high') items.sort((a, b) => Number(b.price) - Number(a.price));
+    else if (sort === 'name') items.sort((a, b) => String(a.name).localeCompare(String(b.name), 'ar'));
+    else items.sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
     $('#emptyProducts').hidden = items.length > 0;
     grid.innerHTML = items.map((p, index) => `<article class="product-card" style="--card-index:${index}">
       ${productVisual(p)}
       <div class="product-info"><div class="product-meta"><span>${esc(p.category || 'منتجات')}</span><span class="product-rating">✦ ترشيحنا</span></div>
       <h3>${esc(p.name)}</h3><p class="product-description">${esc(p.description || 'اختيار مميز لبطولتك القادمة.')}</p>
-      <div class="product-price-row"><div><strong>${money(p.price)}</strong>${Number(p.oldPrice)>Number(p.price)?`<del>${money(p.oldPrice)}</del>`:''}</div><button class="add-cart" data-add="${esc(p.id)}" aria-label="إضافة ${esc(p.name)} إلى السلة">＋</button></div>
+      <div class="product-price-row"><div><strong>${money(p.price)}</strong>${Number(p.oldPrice) > Number(p.price) ? `<del>${money(p.oldPrice)}</del>` : ''}</div><button class="add-cart" data-add="${esc(p.id)}" aria-label="إضافة ${esc(p.name)} إلى السلة">＋</button></div>
       <div class="product-management-actions" aria-label="إدارة المنتج">
         <button class="manage-product-edit" type="button" data-edit-product="${esc(p.id)}">✎ تعديل</button>
         <button class="manage-product-delete" type="button" data-delete-product="${esc(p.id)}">× حذف</button>
@@ -144,12 +144,13 @@
     editingQuickProductId = product ? product.id : null;
     form.elements.id.value = product ? product.id : '';
     if (product) {
-      for (const key of ['name', 'category', 'price', 'oldPrice', 'tag', 'emoji', 'image', 'description']) {
-        if (form.elements[key]) form.elements[key].value = product[key] ?? (key === 'emoji' ? '🏆' : '');
+      for (const key of ['name', 'category', 'price', 'oldPrice', 'tag', 'emoji', 'image', 'description', 'stock']) {
+        if (form.elements[key]) form.elements[key].value = product[key] ?? (key === 'emoji' ? '🏆' : key === 'stock' ? 10 : '');
       }
       setQuickImagePreview(validImage(product.image || ''));
     } else {
       if (form.elements.emoji) form.elements.emoji.value = '🏆';
+      if (form.elements.stock) form.elements.stock.value = 10;
       if (form.elements.image) form.elements.image.value = '';
       setQuickImagePreview('');
     }
@@ -184,6 +185,7 @@
     const name = String(fd.get('name') || '').trim();
     const category = String(fd.get('category') || 'كؤوس');
     const price = Number(fd.get('price'));
+    const stock = Number(fd.get('stock') ?? 10);
     const oldPriceInput = String(fd.get('oldPrice') || '').trim();
     const oldPrice = oldPriceInput ? Number(oldPriceInput) : 0;
     let image = validImage(String(fd.get('image') || '').trim());
@@ -191,7 +193,6 @@
 
     if (!name) { status.textContent = 'اكتب اسم المنتج.'; return; }
     if (!Number.isFinite(price) || price < 0) { status.textContent = 'اكتب سعرًا صحيحًا.'; return; }
-    if (oldPriceInput && (!Number.isFinite(oldPrice) || oldPrice < 0)) { status.textContent = 'اكتب سعرًا قبل الخصم صحيحًا.'; return; }
     if (imageFile) {
       const submitButton = $('#quickProductSubmit');
       if (submitButton) submitButton.disabled = true;
@@ -204,15 +205,11 @@
       }
       if (submitButton) submitButton.disabled = false;
     }
-    if (String(fd.get('image') || '').trim() && !validImage(String(fd.get('image') || '').trim())) {
-      status.textContent = 'تعذر استخدام الصورة الحالية. اختار صورة جديدة.';
-      return;
-    }
 
     const list = products();
     const id = String(fd.get('id') || editingQuickProductId || '').trim();
     const item = {
-      id: id || makeId(), name, category, price,
+      id: id || makeId(), name, category, price, stock,
       oldPrice: oldPrice > price ? oldPrice : 0,
       tag: String(fd.get('tag') || '').trim(),
       emoji: String(fd.get('emoji') || '🏆').trim() || '🏆',
@@ -228,7 +225,7 @@
       write(KEY_PRODUCTS, list);
     } catch (error) {
       console.error('Save product error:', error);
-      status.textContent = 'تعذر حفظ المنتج في المتصفح. قد تكون مساحة التخزين ممتلئة.';
+      status.textContent = 'تعذر حفظ المنتج في المتصفح.';
       return;
     }
 
@@ -241,19 +238,19 @@
     activeCategory = category;
     $$('#categoryFilters [data-filter]').forEach(button => button.classList.toggle('active', button.dataset.filter === category));
     renderProducts();
-    $('#products')?.scrollIntoView({behavior:'smooth', block:'start'});
+    $('#products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   function saveCart(next) { write(KEY_CART, next); renderCart(); }
   function cartDetails() {
     const all = products();
-    return cart().map(item => { const p = all.find(product => product.id === item.id); return p ? {...p, quantity:Math.max(1, Number(item.quantity)||1)} : null; }).filter(Boolean);
+    return cart().map(item => { const p = all.find(product => product.id === item.id); return p ? { ...p, quantity: Math.max(1, Number(item.quantity) || 1) } : null; }).filter(Boolean);
   }
-  function cartTotal() { return cartDetails().reduce((sum,p) => sum + Number(p.price) * p.quantity, 0); }
+  function cartTotal() { return cartDetails().reduce((sum, p) => sum + Number(p.price) * p.quantity, 0); }
   function renderCart() {
-    const items = cartDetails(); const count = items.reduce((n,p) => n + p.quantity, 0); const total = cartTotal();
+    const items = cartDetails(); const count = items.reduce((n, p) => n + p.quantity, 0); const total = cartTotal();
     if ($('#cartCount')) $('#cartCount').textContent = count;
     if ($('#drawerCount')) $('#drawerCount').textContent = `(${count})`;
-    if ($('#cartItems')) $('#cartItems').innerHTML = items.map(p => `<article class="cart-item"><div class="cart-item-art">${validImage(p.image)?`<img src="${esc(validImage(p.image))}" alt="">`:`<span>${esc(p.emoji || '🏆')}</span>`}</div><div class="cart-item-content"><b>${esc(p.name)}</b><strong>${money(p.price)}</strong><div class="quantity-control"><button data-qty="${esc(p.id)}" data-change="-1" aria-label="تقليل الكمية">−</button><span>${p.quantity}</span><button data-qty="${esc(p.id)}" data-change="1" aria-label="زيادة الكمية">＋</button><button class="remove-item" data-remove="${esc(p.id)}">حذف</button></div></div></article>`).join('');
+    if ($('#cartItems')) $('#cartItems').innerHTML = items.map(p => `<article class="cart-item"><div class="cart-item-art">${validImage(p.image) ? `<img src="${esc(validImage(p.image))}" alt="">` : `<span>${esc(p.emoji || '🏆')}</span>`}</div><div class="cart-item-content"><b>${esc(p.name)}</b><strong>${money(p.price)}</strong><div class="quantity-control"><button data-qty="${esc(p.id)}" data-change="-1" aria-label="تقليل الكمية">−</button><span>${p.quantity}</span><button data-qty="${esc(p.id)}" data-change="1" aria-label="زيادة الكمية">＋</button><button class="remove-item" data-remove="${esc(p.id)}">حذف</button></div></div></article>`).join('');
     $('#cartEmpty').hidden = items.length !== 0; $('#cartSummary').hidden = items.length === 0;
     if ($('#cartSubtotal')) $('#cartSubtotal').textContent = money(total);
     if ($('#cartTotal')) $('#cartTotal').textContent = money(total);
@@ -262,11 +259,11 @@
   function addToCart(id) {
     const p = products().find(item => item.id === id); if (!p || p.available === false) return;
     const items = cart(); const existing = items.find(item => item.id === id);
-    if (existing) existing.quantity = Math.min(99, Number(existing.quantity || 1) + 1); else items.push({id, quantity:1});
+    if (existing) existing.quantity = Math.min(99, Number(existing.quantity || 1) + 1); else items.push({ id, quantity: 1 });
     saveCart(items); showToast(`تمت إضافة «${p.name}» إلى السلة`);
   }
-  function openCart() { $('#cartOverlay').hidden = false; $('#cartDrawer').classList.add('open'); $('#cartDrawer').setAttribute('aria-hidden','false'); document.body.classList.add('drawer-open'); }
-  function closeCart() { $('#cartOverlay').hidden = true; $('#cartDrawer').classList.remove('open'); $('#cartDrawer').setAttribute('aria-hidden','true'); document.body.classList.remove('drawer-open'); }
+  function openCart() { $('#cartOverlay').hidden = false; $('#cartDrawer').classList.add('open'); $('#cartDrawer').setAttribute('aria-hidden', 'false'); document.body.classList.add('drawer-open'); }
+  function closeCart() { $('#cartOverlay').hidden = true; $('#cartDrawer').classList.remove('open'); $('#cartDrawer').setAttribute('aria-hidden', 'true'); document.body.classList.remove('drawer-open'); }
   function updateContact() {
     const s = settings();
     const phone = String(s.phone || '').trim();
@@ -290,7 +287,7 @@
     if (emailLink) emailLink.href = email ? `mailto:${email}` : '#contact';
 
     const waLink = wa ? `https://wa.me/${wa}` : '#contact';
-    ['footerWhatsapp','floatingWhatsapp','customContact','newsletterContact'].forEach(id => {
+    ['footerWhatsapp', 'floatingWhatsapp', 'customContact', 'newsletterContact'].forEach(id => {
       const el = document.getElementById(id); if (!el) return;
       el.href = id === 'footerWhatsapp' || id === 'floatingWhatsapp' ? waLink : wa ? `${waLink}?text=${encodeURIComponent('مرحبًا، أريد الاستفسار عن منتجات محمد سبورت')}` : '#contact';
       if (wa) { el.target = '_blank'; el.rel = 'noopener'; }
@@ -310,10 +307,10 @@
     $('#currentYear').textContent = new Date().getFullYear();
     $('#searchInput')?.addEventListener('input', e => { searchTerm = e.currentTarget.value.trim(); renderProducts(); if (searchTerm) { activeCategory = 'الكل'; $$('#categoryFilters [data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'الكل')); } });
     $('#categoryFilters')?.addEventListener('click', e => { const button = e.target.closest('[data-filter]'); if (button) setCategory(button.dataset.filter); });
-    $$('.category-card').forEach(button => button.addEventListener('click', () => { const category = button.dataset.category; $('#searchInput').value = ''; searchTerm=''; setCategory(category); }));
+    $$('.category-card').forEach(button => button.addEventListener('click', () => { const category = button.dataset.category; $('#searchInput').value = ''; searchTerm = ''; setCategory(category); }));
     $('#sortSelect')?.addEventListener('change', renderProducts);
-    $('#showAllProducts')?.addEventListener('click', e => { e.preventDefault(); $('#searchInput').value=''; searchTerm=''; setCategory('الكل'); });
-    $('#clearFilters')?.addEventListener('click', () => { $('#searchInput').value=''; searchTerm=''; setCategory('الكل'); });
+    $('#showAllProducts')?.addEventListener('click', e => { e.preventDefault(); $('#searchInput').value = ''; searchTerm = ''; setCategory('الكل'); });
+    $('#clearFilters')?.addEventListener('click', () => { $('#searchInput').value = ''; searchTerm = ''; setCategory('الكل'); });
     $('#openAddProduct')?.addEventListener('click', () => openQuickProductModal());
     $('#closeProductModal')?.addEventListener('click', closeQuickProductModal);
     $('#cancelQuickProduct')?.addEventListener('click', closeQuickProductModal);
@@ -358,30 +355,67 @@
     $('#cartItems')?.addEventListener('click', e => {
       const remove = e.target.closest('[data-remove]'); const qty = e.target.closest('[data-qty]'); let items = cart();
       if (remove) { items = items.filter(i => i.id !== remove.dataset.remove); saveCart(items); return; }
-      if (qty) { items = items.map(i => i.id === qty.dataset.qty ? {...i, quantity:Math.max(1, Math.min(99, Number(i.quantity || 1) + Number(qty.dataset.change)))} : i); saveCart(items); }
+      if (qty) { items = items.map(i => i.id === qty.dataset.qty ? { ...i, quantity: Math.max(1, Math.min(99, Number(i.quantity || 1) + Number(qty.dataset.change))) } : i); saveCart(items); }
     });
     $('#goCheckout')?.addEventListener('click', openCheckout); $('#closeCheckout')?.addEventListener('click', closeCheckout);
     $('#checkoutModal')?.addEventListener('click', e => { if (e.target === $('#checkoutModal')) closeCheckout(); });
     $('#paymentMethod')?.addEventListener('change', e => { $('#paymentExplainer').textContent = e.target.value === 'instapay' ? 'التحويل الإلكتروني يتم يدويًا بعد التواصل وتأكيد بيانات الدفع. لا تحوّل أي مبلغ قبل تأكيد تفاصيل الطلب.' : 'سيتم التواصل معك لتأكيد تفاصيل الطلب والشحن قبل التجهيز والدفع عند الاستلام.'; });
+
+    // 📦 تعديل إرسال الطلب لخصم المخزن وتسجيل الطلب في تقارير المبيعات اليومية
     $('#checkoutForm')?.addEventListener('submit', e => {
-      e.preventDefault(); const items = cartDetails(); if (!items.length) { closeCheckout(); showToast('السلة فارغة.'); return; }
-      const form = new FormData(e.currentTarget); const order = {
-        id: `MS-${Date.now().toString().slice(-8)}`, createdAt: new Date().toISOString(),
-        customer: {name:String(form.get('name')||'').trim(), phone:String(form.get('phone')||'').trim(), address:String(form.get('address')||'').trim(), governorate:String(form.get('governorate')||'').trim(), notes:String(form.get('notes')||'').trim()},
+      e.preventDefault();
+      const items = cartDetails();
+      if (!items.length) { closeCheckout(); showToast('السلة فارغة.'); return; }
+
+      const allProducts = read(KEY_PRODUCTS, []);
+      for (const cartItem of items) {
+        const pIdx = allProducts.findIndex(p => p.id === cartItem.id);
+        if (pIdx >= 0) {
+          const currentStock = Number(allProducts[pIdx].stock ?? 10);
+          allProducts[pIdx].stock = Math.max(0, currentStock - cartItem.quantity);
+        }
+      }
+      write(KEY_PRODUCTS, allProducts);
+
+      const form = new FormData(e.currentTarget);
+      const order = {
+        id: `MS-${Date.now().toString().slice(-8)}`,
+        createdAt: new Date().toISOString(),
+        customer: {
+          name: String(form.get('name') || '').trim(),
+          phone: String(form.get('phone') || '').trim(),
+          address: String(form.get('address') || '').trim(),
+          governorate: String(form.get('governorate') || '').trim(),
+          notes: String(form.get('notes') || '').trim()
+        },
         payment: form.get('payment') === 'instapay' ? 'تحويل إلكتروني / InstaPay يدويًا' : 'الدفع عند الاستلام',
-        items: items.map(p => ({id:p.id,name:p.name,price:Number(p.price),quantity:p.quantity})), total:cartTotal(), status:'بانتظار تأكيد المتجر', demo:true
+        items: items.map(p => ({ id: p.id, name: p.name, price: Number(p.price), quantity: p.quantity })),
+        total: cartTotal(),
+        status: 'بانتظار تأكيد المتجر',
+        demo: true
       };
-      const orders = read(KEY_ORDERS, []); orders.unshift(order); write(KEY_ORDERS, orders); write(KEY_CART, []); e.currentTarget.reset(); closeCheckout(); renderCart();
-      showToast(`تم تسجيل طلبك التجريبي رقم ${order.id}. راجع تأكيد الطلب مع المتجر.`);
+
+      const orders = read(KEY_ORDERS, []);
+      orders.unshift(order);
+      write(KEY_ORDERS, orders);
+      write(KEY_CART, []);
+
+      e.currentTarget.reset();
+      closeCheckout();
+      renderCart();
+      renderProducts();
+
+      showToast(`تم تسجيل طلبك برقم ${order.id}.`);
       const phone = normalizeWhatsApp(settings().whatsapp);
-      if (phone && confirm(`تم تسجيل طلبك ${order.id} في هذا المتصفح. هل تريد فتح واتساب لإرسال تفاصيل الطلب للمتجر؟`)) {
-        const text = `طلب جديد من محمد سبورت%0Aرقم الطلب: ${order.id}%0Aالاسم: ${order.customer.name}%0Aالهاتف: ${order.customer.phone}%0Aالعنوان: ${order.customer.address}، ${order.customer.governorate}%0Aالمنتجات: ${order.items.map(p => `${p.name} × ${p.quantity} (${money(p.price*p.quantity)})`).join('؛ ')}%0Aالإجمالي المبدئي: ${money(order.total)}%0Aطريقة الدفع: ${order.payment}`;
-        window.open(`https://wa.me/${String(phone).replace(/\D/g,'')}?text=${text}`, '_blank', 'noopener');
+      if (phone && confirm(`تم تسجيل طلبك ${order.id}. هل تريد فتح واتساب لإرسال تفاصيل الطلب؟`)) {
+        const text = `طلب جديد من محمد سبورت%0Aرقم الطلب: ${order.id}%0Aالاسم: ${order.customer.name}%0Aالهاتف: ${order.customer.phone}%0Aالعنوان: ${order.customer.address}، ${order.customer.governorate}%0Aالمنتجات: ${order.items.map(p => `${p.name} × ${p.quantity} (${money(p.price * p.quantity)})`).join('؛ ')}%0Aالإجمالي: ${money(order.total)}`;
+        window.open(`https://wa.me/${String(phone).replace(/\D/g, '')}?text=${text}`, '_blank', 'noopener');
       }
     });
+
     $('#menuToggle')?.addEventListener('click', () => $('#mainNav')?.classList.toggle('nav-open'));
     $$('#mainNav a').forEach(a => a.addEventListener('click', () => $('#mainNav')?.classList.remove('nav-open')));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeCart(); closeCheckout(); closeQuickProductModal(); $('#mainNav')?.classList.remove('nav-open'); } });
-    window.addEventListener('storage', e => { if ([KEY_PRODUCTS,KEY_SETTINGS,KEY_CART].includes(e.key)) refreshStoredData(); });
+    window.addEventListener('storage', e => { if ([KEY_PRODUCTS, KEY_SETTINGS, KEY_CART].includes(e.key)) refreshStoredData(); });
   });
 })();
