@@ -209,8 +209,13 @@
       color: #102a24;
     }
 
-    .hidden-tab {
-      display: none !important;
+    /* إخفاء وإظهار الأقسام بوضوح */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active-content {
+      display: block;
     }
 
     #status {
@@ -231,13 +236,13 @@
 
     <!-- أزرار التنقل بين الأقسام -->
     <div class="admin-tabs">
-      <button class="tab-btn active" id="btn-products" type="button">إدارة المنتجات</button>
-      <button class="tab-btn" id="btn-inventory" type="button">إدارة المخازن 📦</button>
-      <button class="tab-btn" id="btn-reports" type="button">تقارير المبيعات اليومية 📊</button>
+      <button class="tab-btn active" id="btn-tab-products" type="button" onclick="switchTab('products', this)">إدارة المنتجات</button>
+      <button class="tab-btn" id="btn-tab-inventory" type="button" onclick="switchTab('inventory', this)">إدارة المخازن 📦</button>
+      <button class="tab-btn" id="btn-tab-reports" type="button" onclick="switchTab('reports', this)">تقارير المبيعات اليومية 📊</button>
     </div>
 
     <!-- 1️⃣ قسم إدارة المنتجات -->
-    <div id="section-products" class="admin-section">
+    <div id="tab-products" class="tab-content active-content">
       <div class="grid-layout">
         <div class="card">
           <h3 id="formTitle">إضافة منتج جديد</h3>
@@ -290,7 +295,7 @@
     </div>
 
     <!-- 2️⃣ قسم إدارة المخازن -->
-    <div id="section-inventory" class="admin-section hidden-tab">
+    <div id="tab-inventory" class="tab-content">
       <div class="card">
         <h3>متابعة المخزون والكميات المتاحة</h3>
         <div class="table-container">
@@ -315,7 +320,7 @@
     </div>
 
     <!-- 3️⃣ قسم تقارير المبيعات اليومية -->
-    <div id="section-reports" class="admin-section hidden-tab">
+    <div id="tab-reports" class="tab-content">
       <div class="grid-layout" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
         <div class="card" style="border-right: 5px solid #28a745;">
           <p style="color: #666; margin:0;">مبيعات اليوم الإجمالية</p>
@@ -369,49 +374,19 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // تشغيل جلب البيانات فوراً وبدون شاشات معلقة
+    // تشغيل البيانات فوراً
     loadProducts();
     loadInventory();
     loadReports();
 
-    // 🔀 تفعيل التبويبات بسلاسة تامة
-    const btnProducts = document.getElementById('btn-products');
-    const btnInventory = document.getElementById('btn-inventory');
-    const btnReports = document.getElementById('btn-reports');
+    // 🔀 دالة تبديل التبويبات المباشرة والسليمة
+    window.switchTab = function(tabName, btnElement) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active-content'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
-    const secProducts = document.getElementById('section-products');
-    const secInventory = document.getElementById('section-inventory');
-    const secReports = document.getElementById('section-reports');
-
-    btnProducts.addEventListener('click', () => {
-      btnProducts.classList.add('active');
-      btnInventory.classList.remove('active');
-      btnReports.classList.remove('active');
-
-      secProducts.classList.remove('hidden-tab');
-      secInventory.classList.add('hidden-tab');
-      secReports.classList.add('hidden-tab');
-    });
-
-    btnInventory.addEventListener('click', () => {
-      btnInventory.classList.add('active');
-      btnProducts.classList.remove('active');
-      btnReports.classList.remove('active');
-
-      secInventory.classList.remove('hidden-tab');
-      secProducts.classList.add('hidden-tab');
-      secReports.classList.add('hidden-tab');
-    });
-
-    btnReports.addEventListener('click', () => {
-      btnReports.classList.add('active');
-      btnProducts.classList.remove('active');
-      btnInventory.classList.remove('active');
-
-      secReports.classList.remove('hidden-tab');
-      secProducts.classList.add('hidden-tab');
-      secInventory.classList.add('hidden-tab');
-    });
+      document.getElementById('tab-' + tabName).classList.add('active-content');
+      if (btnElement) btnElement.classList.add('active');
+    }
 
     // 1️⃣ جلب المنتجات
     function loadProducts() {
