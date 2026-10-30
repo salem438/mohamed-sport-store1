@@ -209,12 +209,12 @@
       color: #102a24;
     }
 
-    /* إخفاء وإظهار الأقسام بوضوح */
-    .tab-content {
+    /* إخفاء وإظهار الأقسام بوضوح تام */
+    .admin-section {
       display: none;
     }
 
-    .tab-content.active-content {
+    .admin-section.active-section {
       display: block;
     }
 
@@ -223,26 +223,66 @@
       font-weight: bold;
       text-align: center;
     }
+
+    /* 🔒 نافذة حماية الرمز السري (PIN Code) */
+    #pinModalScreen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #102a24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .pin-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="admin-container">
+  <!-- 🔒 شاشة إدخال رمز السر (PIN Code) -->
+  <div id="pinModalScreen">
+    <div class="pin-box">
+      <span style="color: #d97706; font-weight: bold; font-size: 14px;">🏆 متجر محمد سبورت</span>
+      <h2 style="margin: 10px 0; color: #102a24; font-size: 18px;">أدخل رمز السر الخاص بالمدير</h2>
+      <form id="pinForm" style="margin-top: 15px;">
+        <div class="form-group">
+          <input type="password" id="pinInput" placeholder="أدخل الرمز (1234)" required style="text-align: center; font-size: 18px; letter-spacing: 3px;">
+        </div>
+        <p id="pinError" style="color: red; font-size: 13px; display: none; margin-bottom: 10px;">❌ الرمز السرّي غير صحيح!</p>
+        <button type="submit" class="btn-submit">فتح لوحة التحكم 🚀</button>
+      </form>
+      <div style="margin-top: 15px;">
+        <a href="index.html" style="color: #666; font-size: 13px; text-decoration: underline;">العودة للمتجر الرئيسي</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- لوحة التحكم الفعلية (مخفية لحين إدخال الرمز الصحيح) -->
+  <div class="admin-container" id="adminContent" style="display: none;">
     <div class="header-bar">
       <h2>🏆 لوحة إدارة المتجر - محمد سبورت</h2>
-      <a href="index.html" class="logout-btn" style="text-decoration: none; text-align: center;">الرئيسية 🏠</a>
+      <button class="logout-btn" id="logoutBtn" type="button" onclick="location.reload()">قفل اللوحة 🔒</button>
     </div>
 
     <!-- أزرار التنقل بين الأقسام -->
     <div class="admin-tabs">
-      <button class="tab-btn active" id="btn-tab-products" type="button" onclick="switchTab('products', this)">إدارة المنتجات</button>
-      <button class="tab-btn" id="btn-tab-inventory" type="button" onclick="switchTab('inventory', this)">إدارة المخازن 📦</button>
-      <button class="tab-btn" id="btn-tab-reports" type="button" onclick="switchTab('reports', this)">تقارير المبيعات اليومية 📊</button>
+      <button class="tab-btn active" id="btn-products" type="button" onclick="switchSection('products', this)">إدارة المنتجات</button>
+      <button class="tab-btn" id="btn-inventory" type="button" onclick="switchSection('inventory', this)">إدارة المخازن 📦</button>
+      <button class="tab-btn" id="btn-reports" type="button" onclick="switchSection('reports', this)">تقارير المبيعات اليومية 📊</button>
     </div>
 
     <!-- 1️⃣ قسم إدارة المنتجات -->
-    <div id="tab-products" class="tab-content active-content">
+    <div id="section-products" class="admin-section active-section">
       <div class="grid-layout">
         <div class="card">
           <h3 id="formTitle">إضافة منتج جديد</h3>
@@ -295,7 +335,7 @@
     </div>
 
     <!-- 2️⃣ قسم إدارة المخازن -->
-    <div id="tab-inventory" class="tab-content">
+    <div id="section-inventory" class="admin-section">
       <div class="card">
         <h3>متابعة المخزون والكميات المتاحة</h3>
         <div class="table-container">
@@ -320,7 +360,7 @@
     </div>
 
     <!-- 3️⃣ قسم تقارير المبيعات اليومية -->
-    <div id="tab-reports" class="tab-content">
+    <div id="section-reports" class="admin-section">
       <div class="grid-layout" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
         <div class="card" style="border-right: 5px solid #28a745;">
           <p style="color: #666; margin:0;">مبيعات اليوم الإجمالية</p>
@@ -374,18 +414,35 @@
     const db = getFirestore(app);
     const IMGBB_KEY = "77f9f7472599c4979f127ea2ef4a1c02";
 
-    // تشغيل البيانات فوراً
-    loadProducts();
-    loadInventory();
-    loadReports();
+    // 🔑 الرمز السري لفتح اللوحة
+    const ADMIN_PIN = "1234";
 
-    // 🔀 دالة تبديل التبويبات المباشرة والسليمة
-    window.switchTab = function(tabName, btnElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active-content'));
+    // التحقق من الرمز السري وإظهار اللوحة وتشغيل البيانات
+    document.getElementById('pinForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredPin = document.getElementById('pinInput').value.trim();
+      const errorElem = document.getElementById('pinError');
+
+      if (enteredPin === ADMIN_PIN) {
+        document.getElementById('pinModalScreen').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        
+        // جلب البيانات لجميع الأقسام فور الدخول
+        loadProducts();
+        loadInventory();
+        loadReports();
+      } else {
+        errorElem.style.display = 'block';
+      }
+    });
+
+    // 🔀 دالة التنقل بين الأقسام (المنتجات، المخازن، التقارير)
+    window.switchSection = function(sectionId, btnElem) {
+      document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active-section'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
-      document.getElementById('tab-' + tabName).classList.add('active-content');
-      if (btnElement) btnElement.classList.add('active');
+      document.getElementById('section-' + sectionId).classList.add('active-section');
+      if (btnElem) btnElem.classList.add('active');
     }
 
     // 1️⃣ جلب المنتجات
